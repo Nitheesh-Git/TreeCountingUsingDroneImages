@@ -231,12 +231,14 @@ imgsz=640
 
 ---
 
+
 # 👥 Team
 
 | Member | Responsibility |
 |----------|----------------|
-| Nitheesh | Project Lead, Model Development, Documentation |
-| Team Members | Dataset Analysis, Training, Evaluation, Documentation |
+| Nitheesh | Project Lead, Model Development, Repository Management, Documentation |
+| Nishu Kumari | Literature Survey, Dataset Analysis, Documentation |
+| Astley | Data Collection, Research, Model Evaluation, Testing |
 
 ---
 
@@ -251,3 +253,4 @@ imgsz=640
 # 📄 License
 
 This project uses the **Tree-Top-View Dataset** under the **CC BY 4.0 License**. Please refer to the dataset documentation for attribution requirements.
+
