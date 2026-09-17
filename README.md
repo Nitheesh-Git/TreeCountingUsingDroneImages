@@ -236,7 +236,7 @@ imgsz=640
 
 | Member | Responsibility |
 |----------|----------------|
-| Nitheesh | Project Lead, Model Development, Repository Management, Documentation |
+| Nitheesh | Model Development, Repository Management, Documentation |
 | Nishu Kumari | Literature Survey, Dataset Analysis, Documentation |
 | Astley | Data Collection, Research, Model Evaluation, Testing |
 
