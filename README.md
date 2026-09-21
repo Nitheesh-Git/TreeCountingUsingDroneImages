@@ -253,7 +253,7 @@ We overlaid the predictions and ground truth to manually inspect the model's beh
 | Evaluation Pipeline | ✅ Completed |
 | Literature Survey | ⏳ Pending |
 | Dataset Analysis | ⏳ Pending |
-| YOLOv11 Implementation | ⏳ Pending |
+| YOLOv11 Implementation | 🔄 In Progress (Phase 1 Init Complete) |
 | Hyperparameter Tuning | ⏳ Pending |
 | Final Presentation | ⏳ Pending |
 
