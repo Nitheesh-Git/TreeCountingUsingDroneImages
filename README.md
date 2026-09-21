@@ -39,36 +39,19 @@ The system is designed to detect individual tree canopies, estimate the total nu
 
 # 📂 Dataset
 
-**Dataset Name**
+**Dataset Name:** Tree-Top-View Dataset  
+**Source:** Roboflow Universe  
+**Task:** Object Detection  
+**Classes:** `tree-top` (1 class)  
 
-Tree-Top-View Dataset
+**Splits:**
+- **Training Set:** 1191 images
+- **Validation Set:** 116 images
+- **Test Set:** 55 images
 
-**Source**
+**License:** CC BY 4.0  
 
-Roboflow Universe
-
-**Task**
-
-Object Detection
-
-**Dataset Format**
-
-YOLOv11
-
-**Images**
-
-1362 Images
-
-**Classes**
-
-- tree-top
-
-**License**
-
-CC BY 4.0
-
-Dataset Location
-
+**Dataset Location:**
 ```text
 datasets/Tree-Top-View/
 ```
@@ -215,31 +198,64 @@ imgsz=640
 
 ---
 
-# 📊 Baseline Results
+# 📊 YOLOv8n Baseline Evaluation
 
-A baseline **YOLOv8n** model has been trained on the Tree-Top-View dataset:
-- **Epochs**: Early stopping at 26 epochs (no improvement in the last 5 epochs).
-- **Validation mAP50**: 0.537
-- **Best Model Weights**: `runs/detect/tree_detection/baseline_run/weights/best.pt`
-- **Training Results**: `runs/detect/tree_detection/baseline_run/`
+A baseline **YOLOv8n** model was trained on the Tree-Top-View dataset. Training employed early stopping and halted at 26 epochs.
 
-Future work will involve hyperparameter tuning and potentially upgrading to the YOLOv11n architecture for improved accuracy.
+### 🧪 Test-Set Evaluation Results
+
+The model was evaluated against the unseen **55 test images** to establish an unbiased estimate of performance.
+
+| Metric    | Result |
+| --------- | -----: |
+| Precision | 0.5288 |
+| Recall    | 0.6206 |
+| mAP50     | 0.6000 |
+| mAP50-95  | 0.2914 |
+
+These metrics indicate that while the model correctly identifies a solid majority of actual trees (62% Recall), it is somewhat prone to false positives (53% Precision).
+
+### 🔍 Quantitative Error Analysis
+
+To understand the baseline model's actual detection failures, we performed a strict IoU-based matching analysis (IoU threshold: 0.5) on a subset of **30 validation images**. 
+
+*Note: These results represent this specific subset for visual analysis, not the entire validation dataset.*
+
+- **True Positives (TP):** 166
+- **False Positives (FP):** 141
+- **False Negatives (FN):** 104
+- **Subset Precision:** 0.5407
+- **Subset Recall:** 0.6148
+
+> **Important:** The high number of False Positives includes unmatched predictions under our greedy matching algorithm (IoU $\ge$ 0.5). This means "False Positives" include both non-tree objects being detected, as well as duplicate bounding boxes or boxes with poor localization that failed to meet the 50% overlap criteria.
+
+#### Visualizing the Errors
+
+We overlaid the predictions and ground truth to manually inspect the model's behavior:
+- 🟩 **Green Boxes:** True Positives (Correct predictions)
+- 🟥 **Red Boxes:** False Positives (Wrong predictions or duplicates)
+- 🟦 **Blue Boxes:** False Negatives (Actual trees missed by the model)
+
+**Sample Error Analysis Overlay:**
+![Error Analysis Sample](outputs/predictions/error_analysis/2018_SJER_3_252000_4107000_image_477_jpeg.rf.d446084f4e2cd7839d41ea14a16ee2bc.jpg)
+
+*(You can find all 30 analyzed overlays in the `outputs/predictions/error_analysis/` directory of this repository).*
 
 ---
 
-# 📅 Project Roadmap
+# 📅 Current Project Status
 
 | Phase | Status |
 |--------|--------|
-| Repository Setup | ✅ |
-| Dataset Collection | ✅ |
-| Literature Survey | ⏳ |
-| Dataset Analysis | ⏳ |
-| Model Training | ✅ |
-| Hyperparameter Tuning | ⏳ |
-| Evaluation | ⏳ |
-| Documentation | ⏳ |
-| Final Presentation | ⏳ |
+| Repository Setup | ✅ Completed |
+| Dataset Collection | ✅ Completed |
+| Baseline Model Training | ✅ Completed |
+| Evaluation Pipeline | ✅ Completed |
+| Literature Survey | ⏳ Pending |
+| Dataset Analysis | ⏳ Pending |
+| YOLOv11 Implementation | ⏳ Pending |
+| Hyperparameter Tuning | ⏳ Pending |
+| Final Presentation | ⏳ Pending |
 
 ---
 
