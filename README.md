@@ -6,7 +6,7 @@ An AI-powered computer vision project for detecting and counting trees from aeri
 
 # 📌 Project Overview
 
-Manual tree counting is time-consuming, labor-intensive, and prone to human error. This project automates the process using deep learning-based object detection on top-view drone images.
+Traditional manual tree counting is extremely time-consuming, labor-intensive, and highly prone to human error. This project fully automates this process by leveraging deep learning-based object detection on top-view drone imagery.
 
 The system is designed to detect individual tree canopies, estimate the total number of trees, and provide a scalable solution for forestry, plantation management, agriculture, and environmental monitoring.
 
