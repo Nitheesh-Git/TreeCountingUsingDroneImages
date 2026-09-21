@@ -26,6 +26,6 @@ The following pre-processing was applied to each image:
 
 The following augmentation was applied to create 3 versions of each source image:
 * Random brigthness adjustment of between -26 and +26 percent
-* Salt and pepper noise was applied to 6 percent of pixels
+* Salt and pepper noise was applied to 6 % of pixels
 
 
