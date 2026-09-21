@@ -2,3 +2,5 @@
 tree_detection/
 __pycache__/
 *.pt
+*.cache
+context.md

@@ -215,6 +215,18 @@ imgsz=640
 
 ---
 
+# 📊 Baseline Results
+
+A baseline **YOLOv8n** model has been trained on the Tree-Top-View dataset:
+- **Epochs**: Early stopping at 26 epochs (no improvement in the last 5 epochs).
+- **Validation mAP50**: 0.537
+- **Best Model Weights**: `runs/detect/tree_detection/baseline_run/weights/best.pt`
+- **Training Results**: `runs/detect/tree_detection/baseline_run/`
+
+Future work will involve hyperparameter tuning and potentially upgrading to the YOLOv11n architecture for improved accuracy.
+
+---
+
 # 📅 Project Roadmap
 
 | Phase | Status |
@@ -223,7 +235,7 @@ imgsz=640
 | Dataset Collection | ✅ |
 | Literature Survey | ⏳ |
 | Dataset Analysis | ⏳ |
-| Model Training | ⏳ |
+| Model Training | ✅ |
 | Hyperparameter Tuning | ⏳ |
 | Evaluation | ⏳ |
 | Documentation | ⏳ |
