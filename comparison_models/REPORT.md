@@ -209,6 +209,8 @@ The best checkpoint is the epoch with the highest validation mAP@0.5:0.95, which
 | Lowest compute (GFLOPs) | **YOLOv12n** |
 | CPU speed | tie (≈ 21 ms per image) |
 | Training cost | tie (0.5 h each) |
+| External SelvaBox test, detection (mAP@0.5, fewer FP) | **YOLOv9t** (small margin) |
+| External SelvaBox test, counting (MAE, trees found) | **YOLOv12n** (small margin) |
 
 **Conclusion.**
 - **YOLOv12n** is the better detector. It is more precise, raises fewer false alarms, handles dense canopies
@@ -218,6 +220,8 @@ The best checkpoint is the epoch with the highest validation mAP@0.5:0.95, which
   and a total count within 3.4% of the truth. Part of that advantage comes from its false positives
   cancelling its misses, and the advantage does not hold on the validation split.
 - Both were trained on half the data for 17 epochs, so their absolute scores are conservative.
+- **On the external tropical SelvaBox data both models fail in the same way.** They under-count dense,
+  touching crowns by about 80%. The difference between the two models is small next to that domain gap.
 
 ---
 
@@ -227,11 +231,80 @@ The best checkpoint is the epoch with the highest validation mAP@0.5:0.95, which
 2. **Small test set.** 55 images (443 trees); per-site and per-density results rely on very few images. The test split was evaluated once per model after training, and checkpoint selection used validation only.
 3. **The dataset is augmented.** Roboflow created 3 augmented copies of each training image. The subset keeps each image's copies together, and leaves out 10 training scenes whose names also appear in validation or test.
 4. **A fixed confidence of 0.25** was used for counting. A per-model threshold tuned on validation could change the counting MAE.
-5. **Latency is machine-specific.** It was measured on one laptop CPU (i5-12500H). Absolute milliseconds will differ on other hardware.
+5. **External generalisation is weak.** On SelvaBox (dense tropical canopy) both models under-count by about 80% (section 9).
+6. **Latency is machine-specific.** It was measured on one laptop CPU (i5-12500H). Absolute milliseconds will differ on other hardware.
 
 ---
 
-## 9. Reproducibility
+## 9. External test: SelvaBox `testdataset100` (zero-shot, no training)
+
+Both trained models were run **unchanged** on Astley's independent external dataset. It has 100 tiles from
+the official held-out test split of CanopyRS/SelvaBox, with 8,111 annotated tree crowns from tropical forest in
+Brazil, Ecuador and Panama. Each tile is 1777 × 1777 px at 4.5 cm per pixel, covering 80 m × 80 m. The dataset
+was not used for training, checkpoint selection or tuning.
+
+**Settings, fixed before looking at results**
+
+| Setting | Value | Reason |
+|---|---|---|
+| Inference size (primary) | **832 px** | Matches the training ground resolution (about 9.6 cm/px: NEON 10 cm tiles stretched 400 → 416 px); 80 m ÷ 0.096 m ≈ 832 |
+| Inference size (secondary) | 416 px | The plain training input size |
+| Confidence for counting / TP-FP-FN | 0.25 | Same as on the internal test split |
+| Max detections per image | 1,000 | Tiles contain up to 361 crowns (the Ultralytics default of 300 would cap the counts) |
+
+**Results at 832 px (primary)**
+
+| Model | Precision | Recall | mAP@0.5 | mAP@0.5:0.95 | Predicted / GT trees | Count MAE (trees/img) | RMSE | TP / FP / FN (IoU ≥ 0.5) |
+|---|---|---|---|---|---|---|---|---|
+| YOLOv9t | **0.4556** | **0.2743** | **0.2593** | **0.1066** | 1,450 / 8,111 (−82.1%) | 66.77 | 105.3 | 968 / **482** / 7,143 |
+| YOLOv12n | 0.4125 | 0.2540 | 0.2399 | 0.0990 | **1,748** / 8,111 (−78.4%) | **63.91** | **104.6** | **1,066** / 682 / **7,045** |
+
+**Results at 416 px (secondary)**
+
+| Model | Precision | Recall | mAP@0.5 | mAP@0.5:0.95 | Predicted / GT trees | Count MAE | TP / FP / FN |
+|---|---|---|---|---|---|---|---|
+| YOLOv9t | 0.4897 | 0.1537 | 0.1524 | 0.0579 | 670 / 8,111 (−91.7%) | 74.47 | 435 / 235 / 7,676 |
+| YOLOv12n | 0.5145 | 0.1634 | 0.1823 | 0.0722 | 727 / 8,111 (−91.0%) | 74.02 | 464 / 263 / 7,647 |
+
+**By site at 832 px**
+
+| Site | Images | GT trees (mean / img) | YOLOv9t predicted | YOLOv9t MAE | YOLOv12n predicted | YOLOv12n MAE |
+|---|---|---|---|---|---|---|
+| Ecuador (Tiputini) | 60 | 1,095 (18) | 490 | 10.35 | 709 | **6.90** |
+| Brazil (ZF2) | 13 | 1,641 (126) | 378 | 97.15 | 444 | **92.08** |
+| Panama (Agua Salud) | 27 | 5,375 (199) | 582 | 177.52 | 595 | **177.04** |
+
+CPU latency at 832 px on the i5-12500H: YOLOv9t 70.6 ms and YOLOv12n 80.4 ms of pure inference per tile;
+about 130–140 ms per tile including reading the 1777 px PNG.
+
+**Observations**
+- **Both models generalise poorly to tropical forest.** mAP@0.5 drops from about 0.53 on the internal
+  test split to about 0.25. Both models **under-count heavily**: they predict only 18–22% as many trees as
+  are present, and only 12–13% of the real crowns are matched correctly (TP 968 and 1,066 of 8,111).
+- **Scale is not the cause.** At 832 px the SelvaBox crowns have almost the same real size as the training
+  crowns (median 5.0 m against 5.1 m). The cause is the **change of scene**. The models learned on open
+  NEON woodland with about 8 well-separated trees per tile. SelvaBox is closed tropical canopy where crowns
+  touch, with up to 361 trees per tile. The models rarely split touching crowns, so recall collapses
+  (Panama: 8%). Precision stays reasonable (0.41–0.46 by Ultralytics, 0.61–0.67 at conf 0.25), so most
+  detections are real trees.
+- **Error follows density.** On the sparse Ecuador tiles (about 18 trees per tile) counting is usable: MAE
+  6.9 (YOLOv12n) and 10.4 (YOLOv9t). On dense Brazil and Panama tiles the counts are far too low.
+- **YOLOv9t vs YOLOv12n.** YOLOv9t is slightly better on the detection metrics (mAP@0.5 0.259 vs 0.240) and
+  makes fewer false positives. YOLOv12n finds more trees (1,066 vs 968 true positives) and counts more
+  accurately (MAE 63.9 vs 66.8), most clearly on Ecuador (6.9 vs 10.4). The gap is small compared with the
+  domain gap itself.
+- **832 px is clearly better than 416 px** for both models. It finds more than twice as many crowns correctly
+  (TP 968 vs 435 and 1,066 vs 464), which confirms that the inference size must match the ground resolution
+  the model was trained at.
+- **Implication for the project.** Models trained only on Tree-Top-View should not be used for counting in
+  dense tropical forest without fine-tuning on similar imagery.
+
+Per-tile results: `yolov9/metrics/external_testdataset100_imgsz{832,416}.csv` and
+`yolov12/metrics/external_testdataset100_imgsz{832,416}.csv`; summaries in the matching `.json` files.
+
+---
+
+## 10. Reproducibility
 
 | Item | Value |
 |---|---|
@@ -247,4 +320,5 @@ python comparison_models/yolov9/evaluate.py --split val
 python comparison_models/yolov9/evaluate.py --split test
 python comparison_models/common/report_details.py        # sections 4–6 of this report
 python comparison_models/common/summarize.py             # RESULTS.md
+python comparison_models/common/evaluate_external.py     # section 9 (needs external_dataset/testdataset100/)
 ```

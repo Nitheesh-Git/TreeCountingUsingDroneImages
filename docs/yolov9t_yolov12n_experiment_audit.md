@@ -44,7 +44,10 @@ Numbers for the other four models are quoted from the companion documents and ar
    - Their subset was drawn on Astley's machine with `seed=42`, sampling individual files.
    - The subset here was built independently with `seed=0`, sampling Roboflow augmentation groups, before that subset was visible to this machine.
    - Comparisons across these two groups therefore also include a difference in which training images were used.
-6. **External dataset.** The SelvaBox `testdataset100` has **not** been evaluated with YOLOv9t or YOLOv12n yet. It is waiting for the dataset to reach this machine.
+6. **External dataset (SelvaBox `testdataset100`, zero-shot).** Both models were evaluated at a pre-specified 832 px (ground-resolution matched) and at 416 px (Part 16).
+   - At 832 px: YOLOv9t mAP@0.50 0.2593, YOLOv12n 0.2399.
+   - Both under-count heavily: 1,450 and 1,748 of 8,111 trees predicted, count MAE 66.8 and 63.9.
+   - The cause is dense, touching tropical crowns, not scale: crown sizes in metres match the training data.
 
 ---
 
@@ -79,6 +82,7 @@ comparison_models/
 │   ├── pipeline.py               shared train / evaluate / count / latency code
 │   ├── cli.py                    shared command-line arguments
 │   ├── report_details.py         TP/FP/FN, complexity, counting breakdown
+│   ├── evaluate_external.py      zero-shot SelvaBox testdataset100 evaluation
 │   └── summarize.py              writes RESULTS.md and results_summary.csv
 ├── yolov9/  yolov12/
 │   ├── config.yaml               model + training settings
@@ -431,10 +435,48 @@ OMP_NUM_THREADS=8 MKL_NUM_THREADS=8 .venv/bin/python comparison_models/yolov12/t
 
 ---
 
-## Part 16 — Remaining work
+## Part 16 — External evaluation: SelvaBox `testdataset100` (zero-shot)
 
-1. **External SelvaBox evaluation (`testdataset100`).** Run YOLOv9t and YOLOv12n `best.pt` on the 100 SelvaBox test tiles (1777 × 1777, 8,111 crowns) **without retraining**, as Astley requested.
-   - Report detection metrics, counting MAE and per-site results.
-   - Decide on one inference resolution and use it for every model evaluated. Native 1777 px tiles at `imgsz=416` shrink crowns about 4.3×, so for example 416 against 1024 or tiled inference.
+- **Dataset.** Astley's `testdataset100.zip` (424.6 MB, 208 files) was checked before extraction: no absolute or `..` paths. It was extracted to `comparison_models/external_dataset/testdataset100/` (git-ignored).
+  - All 12 of Astley's validation checks are recorded as PASS.
+  - It contains 100 PNG tiles of 1777 × 1777 px (4.5 cm GSD, 80 m × 80 m) and 8,111 crowns: Brazil ZF2 13 tiles / 1,641 crowns, Ecuador Tiputini 60 / 1,095, Panama Agua Salud 27 / 5,375.
+- **Loader.** The dataset stores labels in `annotations/`, so `comparison_models/common/evaluate_external.py` builds a symlink view with an `images/` + `labels/` layout in `comparison_models/data/testdataset100_view/`. The extracted files are only read.
+- **Pre-specified settings** (fixed before any result was seen; nothing was tuned on this set):
+
+  | Setting | Value | Reason |
+  |---|---|---|
+  | imgsz (primary) | 832 | Training ground resolution ≈ 9.6 cm/px (NEON 10 cm tiles, 400 → 416 px); 80 m ÷ 0.096 ≈ 833 → 832 (stride 32) |
+  | imgsz (secondary) | 416 | Plain training input size |
+  | conf for counting and TP/FP/FN | 0.25 | Same as the internal test split |
+  | max_det | 1,000 | Up to 361 crowns per tile; the Ultralytics default (300) would cap counts |
+  | Ultralytics validator | conf 0.001, NMS IoU 0.7, batch 4, CPU | Standard |
+
+- **Results** (`yolov9/metrics/external_testdataset100_imgsz{832,416}.json/.csv`, `yolov12/metrics/…`):
+
+  | Model | imgsz | P | R | mAP@0.50 | mAP@0.50:0.95 | Predicted / 8,111 | MAE | RMSE | Bias | TP / FP / FN @0.25 | Inference ms/tile |
+  |---|---|---|---|---|---|---|---|---|---|---|---|
+  | YOLOv9t | 832 | 0.4556 | 0.2743 | 0.2593 | 0.1066 | 1,450 (−82.1%) | 66.77 | 105.30 | −66.61 | 968 / 482 / 7,143 | 70.6 |
+  | YOLOv12n | 832 | 0.4125 | 0.2540 | 0.2399 | 0.0990 | 1,748 (−78.4%) | 63.91 | 104.56 | −63.63 | 1,066 / 682 / 7,045 | 80.4 |
+  | YOLOv9t | 416 | 0.4897 | 0.1537 | 0.1524 | 0.0579 | 670 (−91.7%) | 74.47 | 114.26 | −74.41 | 435 / 235 / 7,676 | 23.9 |
+  | YOLOv12n | 416 | 0.5145 | 0.1634 | 0.1823 | 0.0722 | 727 (−91.0%) | 74.02 | 114.16 | −73.84 | 464 / 263 / 7,647 | 23.9 |
+
+- **By site at 832 px:**
+
+  | Site | Images | GT | YOLOv9t pred / MAE / recall@0.25 | YOLOv12n pred / MAE / recall@0.25 |
+  |---|---|---|---|---|
+  | Ecuador Tiputini | 60 | 1,095 | 490 / 10.35 / 0.232 | 709 / 6.90 / 0.304 |
+  | Brazil ZF2 | 13 | 1,641 | 378 / 97.15 / 0.171 | 444 / 92.08 / 0.189 |
+  | Panama Agua Salud | 27 | 5,375 | 582 / 177.52 / 0.081 | 595 / 177.04 / 0.079 |
+
+- **Crown-size check** (from the SelvaBox labels, √(w·h) in metres): p10 / median / p90 = 2.2 / 5.0 / 10.2 m. Tree-Top-View training crowns are about 2.3 / 5.1 / 9.3 m. At 832 px the crowns are therefore at the scale the models were trained on.
+  - The failure comes from **canopy type and density**: closed tropical canopy with up to 361 touching crowns per tile, against about 8.4 trees per tile in open NEON woodland.
+  - Recall collapses (Panama about 8%) while precision at conf 0.25 stays at 0.61–0.67.
+- **Conclusion.** Neither model transfers to dense tropical forest without fine-tuning. Between them, YOLOv9t has slightly better detection metrics and fewer false positives, and YOLOv12n finds more trees and counts slightly better. The difference is small compared with the domain gap.
+
+---
+
+## Part 17 — Remaining work
+
+1. **Same-settings external results for YOLOv5n and YOLOv7-tiny.** For a like-for-like external comparison, Astley should evaluate those models on `testdataset100` with the same settings: imgsz 832 (and 416), conf 0.25, max_det 1000, the greedy IoU 0.5 matching.
 2. **Optional fair re-run.** If time allows, retrain YOLOv9t and YOLOv12n for the full 30 epochs, one at a time, and ideally on Astley's seed-42 subset. That would make the comparison with YOLOv5n and YOLOv7-tiny controlled.
 3. **Optional single-machine latency.** Time every `best.pt` file on one machine with Protocol A.
