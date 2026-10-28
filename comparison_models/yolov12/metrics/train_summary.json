@@ -1,0 +1,38 @@
+{
+  "model": "YOLOv12n",
+  "pretrained": "yolo12n.pt",
+  "train_images": 594,
+  "settings": {
+    "imgsz": 416,
+    "epochs": 30,
+    "patience": 5,
+    "batch": 8,
+    "device": "cpu",
+    "seed": 0,
+    "deterministic": true,
+    "workers": 2,
+    "optimizer": "auto",
+    "time": 0.5
+  },
+  "epochs_completed": 17,
+  "best_epoch_val": {
+    "epoch": 16,
+    "precision": 0.5311,
+    "recall": 0.54399,
+    "mAP50": 0.55269,
+    "mAP50-95": 0.2759
+  },
+  "training_duration_s": 1798.8,
+  "training_duration_h": 0.5,
+  "resumed": false,
+  "environment": {
+    "python": "3.12.13",
+    "ultralytics": "8.4.177",
+    "torch": "2.14.1+cpu",
+    "cpu": "12th Gen Intel(R) Core(TM) i5-12500H",
+    "cuda_available": false
+  },
+  "run_dir": "comparison_models/yolov12/runs/yolov12n_half_subset",
+  "stop_reason": "time budget (0.5 h)",
+  "note": "Trained concurrently with the other comparison model (8 CPU threads each, workers=2)."
+}
