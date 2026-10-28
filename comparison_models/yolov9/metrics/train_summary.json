@@ -16,11 +16,11 @@
   },
   "epochs_completed": 17,
   "best_epoch_val": {
-    "epoch": 16,
-    "precision": 0.51207,
-    "recall": 0.51073,
-    "mAP50": 0.52591,
-    "mAP50-95": 0.27146
+    "epoch": 17,
+    "precision": 0.52684,
+    "recall": 0.48176,
+    "mAP50": 0.51884,
+    "mAP50-95": 0.27203
   },
   "training_duration_s": 1833.9,
   "training_duration_h": 0.509,

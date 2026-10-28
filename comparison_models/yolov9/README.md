@@ -27,7 +27,7 @@ python comparison_models/yolov9/predict.py datasets/Tree-Top-View/test/images/<i
 
 ## Results
 
-Training: 17 epochs in 30.6 min on CPU (stopped by the 0.5 h time budget, run at the same time as the other comparison model). Best validation epoch: 16.
+Training: 17 epochs in 30.6 min on CPU (stopped by the 0.5 h time budget, run at the same time as the other comparison model). Best validation epoch (saved as `best.pt`, Ultralytics fitness = mAP50-95): 17.
 
 | Split | Precision | Recall | mAP50 | mAP50-95 | Count MAE | Predicted / GT trees |
 |---|---|---|---|---|---|---|

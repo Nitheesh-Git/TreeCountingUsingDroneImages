@@ -1,0 +1,154 @@
+{
+  "model": "YOLOv12n",
+  "complexity": {
+    "parameters": 2583091,
+    "parameters_M": 2.58,
+    "GFLOPs_416": 2.94,
+    "GFLOPs_640": 7.53,
+    "layers": 466,
+    "checkpoint_MB": 5.52
+  },
+  "test_F1_from_ultralytics_PR": 0.5318,
+  "error_analysis_val30": {
+    "images": 30,
+    "TP": 159,
+    "FP": 109,
+    "FN": 111,
+    "precision": 0.5933,
+    "recall": 0.5889,
+    "F1": 0.5911
+  },
+  "error_analysis_test55": {
+    "images": 55,
+    "TP": 224,
+    "FP": 170,
+    "FN": 219,
+    "precision": 0.5685,
+    "recall": 0.5056,
+    "F1": 0.5352
+  },
+  "counting_test_breakdown": {
+    "exact_count_share": 0.1636,
+    "within_1_share": 0.3818,
+    "within_2_share": 0.5273,
+    "over_counted_images": 20,
+    "under_counted_images": 26,
+    "mean_relative_error": 0.4586,
+    "MAE_by_density": {
+      "0-5 trees": {
+        "images": 20,
+        "MAE": 1.9
+      },
+      "6-10 trees": {
+        "images": 19,
+        "MAE": 3.0
+      },
+      "11+ trees": {
+        "images": 16,
+        "MAE": 4.5
+      }
+    },
+    "MAE_by_site": {
+      "ABBY": {
+        "images": 8,
+        "MAE": 3.25
+      },
+      "BART": {
+        "images": 10,
+        "MAE": 3.7
+      },
+      "BONA": {
+        "images": 1,
+        "MAE": 5.0
+      },
+      "CLBJ": {
+        "images": 2,
+        "MAE": 2.0
+      },
+      "DEJU": {
+        "images": 7,
+        "MAE": 4.0
+      },
+      "DELA": {
+        "images": 3,
+        "MAE": 3.6667
+      },
+      "DSNY": {
+        "images": 6,
+        "MAE": 2.6667
+      },
+      "GRSM": {
+        "images": 1,
+        "MAE": 1.0
+      },
+      "GUAN": {
+        "images": 2,
+        "MAE": 1.0
+      },
+      "HEAL": {
+        "images": 4,
+        "MAE": 2.25
+      },
+      "JERC": {
+        "images": 2,
+        "MAE": 3.5
+      },
+      "SJER": {
+        "images": 5,
+        "MAE": 1.2
+      },
+      "TEAK": {
+        "images": 4,
+        "MAE": 3.75
+      }
+    }
+  },
+  "training_curve": {
+    "epochs": 17,
+    "avg_epoch_time_s": 105.3,
+    "final_train_box_loss": 1.52209,
+    "final_train_cls_loss": 1.33243,
+    "final_train_dfl_loss": 1.33428,
+    "final_val_box_loss": 1.64262,
+    "final_val_cls_loss": 1.40817,
+    "final_val_dfl_loss": 1.46289,
+    "val_mAP50_by_epoch": [
+      0.2691,
+      0.2708,
+      0.2456,
+      0.2746,
+      0.414,
+      0.4325,
+      0.3833,
+      0.4336,
+      0.4741,
+      0.3991,
+      0.496,
+      0.4972,
+      0.4945,
+      0.4378,
+      0.5317,
+      0.5527,
+      0.5512
+    ],
+    "val_mAP50-95_by_epoch": [
+      0.1069,
+      0.1008,
+      0.0888,
+      0.1114,
+      0.2071,
+      0.1881,
+      0.1739,
+      0.1945,
+      0.2231,
+      0.1874,
+      0.2425,
+      0.2289,
+      0.2369,
+      0.2036,
+      0.2607,
+      0.2759,
+      0.2738
+    ]
+  }
+}

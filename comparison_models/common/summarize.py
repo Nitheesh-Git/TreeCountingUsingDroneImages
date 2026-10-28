@@ -18,7 +18,7 @@ MODELS = {"YOLOv9t": ROOT / "yolov9", "YOLOv12n": ROOT / "yolov12"}
 # full 1,191-image training set, CPU training on Intel i7-1255U).
 REFERENCE = {
     "YOLOv8n": {"precision": 0.5288, "recall": 0.6206, "mAP50": 0.6000, "mAP50-95": 0.2914,
-                "MAE": 3.2727, "best_epoch": 20, "epochs": "26 (early stop)", "train_h": 2.19,
+                "MAE": 3.2727, "best_epoch": 21, "epochs": "26 (early stop)", "train_h": 2.19,
                 "latency": "72.39 ± 16.47 (i7-1255U)", "train_imgs": 1191},
     "YOLO11n": {"precision": 0.5764, "recall": 0.6082, "mAP50": 0.6083, "mAP50-95": 0.2993,
                 "MAE": 3.2364, "best_epoch": 30, "epochs": "30", "train_h": 2.41,

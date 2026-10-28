@@ -185,14 +185,15 @@ def write_json(path, data):
 # Training
 # --------------------------------------------------------------------------- #
 def _best_epoch_from_results(results_csv):
-    """Best epoch using Ultralytics' own fitness: 0.1*mAP50 + 0.9*mAP50-95."""
+    """Best epoch using Ultralytics' own fitness (8.4.x: mAP50-95 only, see
+    ultralytics.utils.metrics.DetMetrics.fitness), i.e. the epoch saved as best.pt."""
     with open(results_csv) as f:
         rows = [{k.strip(): v.strip() for k, v in r.items()} for r in csv.DictReader(f)]
     if not rows:
         return None, 0
 
     def fitness(r):
-        return 0.1 * float(r["metrics/mAP50(B)"]) + 0.9 * float(r["metrics/mAP50-95(B)"])
+        return float(r["metrics/mAP50-95(B)"])
 
     best = max(rows, key=fitness)
     return {

@@ -115,4 +115,4 @@ Replace `yolov9` with `yolov12` for the other model.
 
 ## Results
 
-See [RESULTS.md](RESULTS.md) and `results_summary.csv` (regenerate with `python comparison_models/common/summarize.py`).
+Full write-up with all evaluation parameters: [REPORT.md](REPORT.md). Short table: [RESULTS.md](RESULTS.md) and `results_summary.csv` (regenerate with `python comparison_models/common/summarize.py`).
