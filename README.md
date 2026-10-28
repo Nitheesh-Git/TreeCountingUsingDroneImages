@@ -243,17 +243,38 @@ We overlaid the predictions and ground truth to manually inspect the model's beh
 
 ---
 
+# 🚀 YOLO11n Evaluation & Comparison (Phase 2)
+
+A **YOLO11n** (Nano variant) model was trained for 30 epochs on the Tree-Top-View dataset.
+
+### 🧪 Test-Set Evaluation Results (55 Unseen Test Images)
+
+| Metric | YOLOv8n Baseline | YOLO11n (Phase 2) | Relative Change |
+| :--- | :---: | :---: | :---: |
+| **Precision** | 0.5288 | **0.5764** | **+9.00%** 📈 |
+| **Recall** | **0.6206** | 0.6082 | -2.00% |
+| **mAP50** | 0.6000 | **0.6083** | **+1.38%** 📈 |
+| **mAP50-95** | 0.2914 | **0.2993** | **+2.71%** 📈 |
+| **Tree Counting MAE** | 3.2727 trees/img | **3.2364 trees/img** | **+1.11% accuracy** 🏆 |
+| **Inference Latency** | 72.39 ms | **67.65 ms** | **~6.5% faster** ⚡ |
+
+For in-depth analysis, per-image counting evaluations, and quantitative error breakdowns:
+- 📄 **Full Comparison Report:** [docs/yolov8n_vs_yolo11n_comparison.md](docs/yolov8n_vs_yolo11n_comparison.md)
+- 📄 **Training & Validation Log:** [docs/yolov11_phase2_training.md](docs/yolov11_phase2_training.md)
+
+---
+
 # 📅 Current Project Status
 
 | Phase | Status |
 |--------|--------|
 | Repository Setup | ✅ Completed |
 | Dataset Collection | ✅ Completed |
-| Baseline Model Training | ✅ Completed |
+| Baseline Model Training (YOLOv8n) | ✅ Completed |
 | Evaluation Pipeline | ✅ Completed |
 | Literature Survey | ⏳ Pending |
 | Dataset Analysis | ⏳ Pending |
-| YOLOv11 Implementation | 🔄 In Progress (Phase 1 Init Complete) |
+| YOLOv11 Implementation | ✅ Completed (Phase 1 & Phase 2) |
 | Hyperparameter Tuning | ⏳ Pending |
 | Final Presentation | ⏳ Pending |
 
