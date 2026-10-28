@@ -2,7 +2,7 @@
 
 Comparison model for the Tree Counting Using Drone Images project. The shared protocol
 is in [../README.md](../README.md). The model is trained on the **594-image half
-subset**, while the YOLOv8n and YOLO11n baselines used the full 1,191-image split.
+subset** of the 1,191-image training split, under a 0.5 h CPU time budget (17 epochs).
 
 - **Variant:** YOLOv12n (`yolo12n.pt`), COCO-pretrained, official Ultralytics asset
 - **Implementation:** `ultralytics==8.4.177` (upstream architecture: sunsmarterjie/yolov12)

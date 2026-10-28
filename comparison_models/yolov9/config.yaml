@@ -1,6 +1,6 @@
 # YOLOv9t comparison-model configuration.
-# Training settings mirror the YOLO11n Phase 2 run (src/train_yolov11.py) except
-# for the training data (594-image half subset, see common/subset_stats.md).
+# Training data: 594-image half subset (see common/subset_stats.md).
+# Settings are identical for YOLOv9t and YOLOv12n.
 model_name: YOLOv9t
 pretrained: yolov9t.pt            # official Ultralytics asset (COCO-pretrained), stored in weights/ (git-ignored)
 implementation: "Ultralytics port of the official YOLOv9 (WongKinYiu/yolov9), tiny variant"
@@ -15,4 +15,4 @@ train:
   seed: 0
   deterministic: true
   workers: 4
-  optimizer: auto           # Ultralytics default, same as YOLOv8n / YOLO11n runs
+  optimizer: auto           # Ultralytics default (resolves to AdamW lr 0.002)

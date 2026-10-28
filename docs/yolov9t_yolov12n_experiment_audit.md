@@ -5,7 +5,7 @@
 **Branch:** `yolov12-yolov9-comparison` (base `main` @ `356c0a1`, first comparison commit `62b4dce`)
 **Audit date:** 29 October 2026
 **Companion documents:** `comparison_models/REPORT.md` (results report), `comparison_models/RESULTS.md` (short table),
-and Astley's `docs/comprehensive_model_experiment_audit.md` (YOLOv8n, YOLO11n, YOLOv5n, YOLOv7-tiny).
+and Astley's `docs/comprehensive_model_experiment_audit.md` (YOLOv5n, YOLOv7-tiny).
 
 Every number below was read from files produced on this machine:
 - `results.csv` and `args.yaml` in each `runs/` folder
@@ -21,7 +21,7 @@ Numbers for the other four models are quoted from the companion documents and ar
 
 1. **Scope.**
    - Two more comparison models were trained and evaluated: **YOLOv9t** (`yolov9t.pt`) and **YOLOv12n** (`yolo12n.pt`).
-   - Both use the Ultralytics trainer (the same engine as YOLOv8n, YOLO11n and YOLOv5n), on the Tree-Top-View dataset at 416 × 416.
+   - Both use the Ultralytics trainer (the same engine as YOLOv5n), on the Tree-Top-View dataset at 416 × 416.
    - Training data was a reproducible **594-image half subset** of the 1,191-image training split.
    - Evaluation used the **unchanged** 116-image validation split and 55-image test split.
 2. **Deviation from the planned protocol.**
@@ -36,10 +36,10 @@ Numbers for the other four models are quoted from the companion documents and ar
    | YOLOv9t | 0.5052 | 0.5532 | 0.5256 | 0.2640 | **2.8545** | 428 (−15, −3.39%) |
    | YOLOv12n | 0.5219 | 0.5421 | 0.5383 | 0.2596 | 3.0364 | 394 (−49, −11.06%) |
 
-4. **Position relative to the other four models.**
-   - **Detection:** YOLO11n remains the strongest detector (test mAP@0.50 0.6083, mAP@0.50:0.95 0.2993).
-   - **Counting:** YOLOv9t has the **lowest per-image counting MAE of all six models** (2.85, against 3.20 for YOLOv5n and 3.24 for YOLO11n). It does this despite the least training: 594 images, 17 epochs, 0.5 h.
-   - **False positives:** YOLOv12n has the **fewest false positives** of all six models on the shared 30-image validation error-analysis subset (FP = 109).
+4. **Comparison between the two models, and with the other half-subset models.**
+   - **Detection:** YOLOv12n is the better detector of the pair. It is ahead on every validation metric (mAP@0.50 0.5525 vs 0.5188), and on test precision, F1 and mAP@0.50.
+   - **Counting:** YOLOv9t has the lower test counting MAE (2.85 vs 3.04). That is also the lowest among the four half-subset models (YOLOv5n 3.20, YOLOv7-tiny 3.76), despite the least training: 17 epochs, 0.5 h.
+   - **False positives:** YOLOv12n has 32 fewer false positives than YOLOv9t on the test split (170 vs 202) while finding almost the same number of trees.
 5. **Subset difference with YOLOv5n and YOLOv7-tiny.** YOLOv9t and YOLOv12n did **not** use the same 595-image subset as YOLOv5n and YOLOv7-tiny (see Part 4.4):
    - Their subset was drawn on Astley's machine with `seed=42`, sampling individual files.
    - The subset here was built independently with `seed=0`, sampling Roboflow augmentation groups, before that subset was visible to this machine.
@@ -93,7 +93,7 @@ comparison_models/
 └── data/tree_top_view_half/      generated symlink dataset view   (git-ignored)
 ```
 
-**Not modified:** `datasets/Tree-Top-View/` (including `data.yaml` and every image and label), `train.py`, every script in `src/`, `outputs/`, `docs/` (except for this new file), and the baseline checkpoints. The only change to a pre-existing file is 8 lines appended to `.gitignore`.
+**Not modified:** `datasets/Tree-Top-View/` (including `data.yaml` and every image and label), `train.py`, every script in `src/`, `outputs/`, `docs/` (except for this new file), and the existing checkpoints. The only change to a pre-existing file is 8 lines appended to `.gitignore`.
 
 ---
 
@@ -105,7 +105,7 @@ comparison_models/
 | YOLOv12n | `yolo12n` (nano), no substitution | Ultralytics 8.4.177 `DetectionModel` | sunsmarterjie/yolov12, area attention + R-ELAN | `yolo12n.pt`, Ultralytics assets v8.3.0, COCO, 5,595,063 B | 685 / 691 tensors |
 
 **Why the Ultralytics implementations were used:**
-- Both models are native in Ultralytics. They use the same data loader, augmentation pipeline, TAL assigner, CIoU + DFL + BCE loss, `optimizer=auto` logic and metric code as YOLOv8n, YOLO11n and YOLOv5nu, so implementation differences stay as small as possible.
+- Both models are native in Ultralytics. They use the same data loader, augmentation pipeline, TAL assigner, CIoU + DFL + BCE loss, `optimizer=auto` logic and metric code as YOLOv5nu, so implementation differences stay as small as possible.
 - No dependency patches were needed, unlike YOLOv7-tiny.
 - The upstream repos ship their own trainers and newer checkpoints, such as the YOLOv12 "turbo" weights and YOLOv9's dual-branch PGI training. These were **not** used.
 - YOLOv12n ran without FlashAttention (not installed). Ultralytics falls back to PyTorch scaled-dot-product attention.
@@ -149,7 +149,7 @@ All label lines have 5 values, class 0 and normalised coordinates in [0, 1]. The
   - `DSNY_002_2019`, `DSNY_005_2018`, `DSNY_006_2018`, `DSNY_006_2019`
 - The mean absolute pixel difference to the closest training version is 9.7–46.1 grey levels, against 49.0 for two unrelated images. Some of these are therefore probably the same scene with augmentation applied.
 - They were **excluded from the subset** as a precaution. The original splits were left unchanged.
-- The full-data models (YOLOv8n, YOLO11n) were trained with these images, and so possibly were YOLOv5n and YOLOv7-tiny, whose subset sampled individual files.
+- YOLOv5n and YOLOv7-tiny may have been trained with these images, because their subset sampled individual files.
 
 ### 4.4 Selection procedure (`comparison_models/common/make_subset.py`)
 
@@ -195,25 +195,25 @@ Every site keeps about half its images (for example BART 174 → 90, DEJU 201 �
 
 ## Part 5 — Training configuration (from `runs/*/args.yaml`)
 
-| Setting | YOLOv9t | YOLOv12n | YOLO11n / YOLOv8n (reference) |
-|---|---|---|---|
-| Data | 594-image subset | 594-image subset | 1,191 (full) |
-| imgsz / batch | 416 / 8 | 416 / 8 | 416 / 8 |
-| epochs / patience | 30 / 5, overridden by `time: 0.5` | 30 / 5, overridden by `time: 0.5` | 30 / 5 |
-| Epochs actually run | **17** (plan re-estimated 30 → 35 → 24 → 21 → 20 → 19 → 18 → 17) | **17** (plan re-estimated 30 → 18 → 17) | 26 (v8n, early stop) / 30 (v11n) |
-| seed / deterministic | 0 / true | 0 / true | 0 / true |
-| optimizer | auto → **AdamW lr 0.002, momentum 0.9** (log confirmed) | auto → **AdamW lr 0.002, momentum 0.9** (log confirmed) | auto → AdamW lr 0.002 |
-| lrf / weight_decay / warmup_epochs | 0.01 / 0.0005 / 3.0 | 0.01 / 0.0005 / 3.0 | same |
-| Loss gains box / cls / dfl | 7.5 / 0.5 / 1.5 | 7.5 / 0.5 / 1.5 | same |
-| Augmentation | hsv 0.015/0.7/0.4, translate 0.1, scale 0.5, fliplr 0.5, mosaic 1.0, mixup 0, erasing 0.4 | same | same |
-| close_mosaic | 10 → **mosaic off from epoch 9** (after 8 of 17) | 10 → **mosaic off from epoch 8** (after 7 of 17) | 10 → off from epoch 21 of 30 |
-| workers / device | 2 / CPU, 8 threads | 2 / CPU, 8 threads | 4–8 / CPU |
-| Concurrency | run at the same time as YOLOv12n | run at the same time as YOLOv9t | one run at a time |
+| Setting | YOLOv9t | YOLOv12n |
+|---|---|---|
+| Data | 594-image subset | 594-image subset |
+| imgsz / batch | 416 / 8 | 416 / 8 |
+| epochs / patience | 30 / 5, overridden by `time: 0.5` | 30 / 5, overridden by `time: 0.5` |
+| Epochs actually run | **17** (plan re-estimated 30 → 35 → 24 → 21 → 20 → 19 → 18 → 17) | **17** (plan re-estimated 30 → 18 → 17) |
+| seed / deterministic | 0 / true | 0 / true |
+| optimizer | auto → **AdamW lr 0.002, momentum 0.9** (log confirmed) | auto → **AdamW lr 0.002, momentum 0.9** (log confirmed) |
+| lrf / weight_decay / warmup_epochs | 0.01 / 0.0005 / 3.0 | 0.01 / 0.0005 / 3.0 |
+| Loss gains box / cls / dfl | 7.5 / 0.5 / 1.5 | 7.5 / 0.5 / 1.5 |
+| Augmentation | hsv 0.015/0.7/0.4, translate 0.1, scale 0.5, fliplr 0.5, mosaic 1.0, mixup 0, erasing 0.4 | same |
+| close_mosaic | 10 → **mosaic off from epoch 9** (after 8 of 17) | 10 → **mosaic off from epoch 8** (after 7 of 17) |
+| workers / device | 2 / CPU, 8 threads | 2 / CPU, 8 threads |
+| Concurrency | run at the same time as YOLOv12n | run at the same time as YOLOv9t |
 
 **Effect of the time budget.**
 - Ultralytics' `time` argument re-estimates the total number of epochs after every epoch, and rescales the learning-rate schedule so that it decays fully by the end of the budget.
 - Both runs therefore finished with a fully decayed learning rate (`lr/pg0` = 0.0001 at epoch 17), rather than being cut off mid-schedule.
-- Because the plan shrank to 17–18 epochs, `close_mosaic=10` turned mosaic off much earlier than in the 30-epoch baseline runs.
+- Because the plan shrank to 17–18 epochs, `close_mosaic=10` turned mosaic off much earlier than it would in a 30-epoch run.
 
 ---
 
@@ -302,20 +302,18 @@ Breaking test MAE down by tree density:
 | YOLOv9t | 1.50 | 2.63 | 4.81 |
 | YOLOv12n | 1.90 | 3.00 | 4.50 |
 
-As Astley's audit explains (Part 5.6), the per-image counting error equals |FPᵢ − FNᵢ|, so false positives and false negatives in the same image cancel. This is how YOLOv9t can have the lowest MAE while having lower mAP than YOLO11n.
+As Astley's audit explains (Part 5.6), the per-image counting error equals |FPᵢ − FNᵢ|, so false positives and false negatives in the same image cancel. This is how YOLOv9t can have the lower MAE while having the lower mAP@0.50 of the two models.
 
 ---
 
 ## Part 9 — Error analysis: TP / FP / FN
 
-The algorithm is identical to `src/analyze_predictions_yolov11.py`: integer pixel boxes, predictions sorted by confidence, greedy one-to-one matching at IoU ≥ 0.50, conf ≥ 0.25. It was implemented in `common/report_details.py`.
+The algorithm is identical to the project's existing `src/analyze_predictions*.py` scripts: integer pixel boxes, predictions sorted by confidence, greedy one-to-one matching at IoU ≥ 0.50, conf ≥ 0.25. It was implemented in `common/report_details.py`.
 
 | Subset | Model | TP | FP | FN | P | R | F1 |
 |---|---|---|---|---|---|---|---|
-| First 30 sorted validation images (270 GT), **the same subset as the baselines** | YOLOv8n (reported) | 166 | 141 | 104 | 0.5407 | 0.6148 | 0.5754 |
-| | YOLO11n (reported) | **179** | 119 | **91** | **0.6007** | **0.6630** | **0.6303** |
-| | YOLOv9t | 152 | 117 | 118 | 0.5651 | 0.5630 | 0.5640 |
-| | YOLOv12n | 159 | **109** | 111 | 0.5933 | 0.5889 | 0.5911 |
+| First 30 sorted validation images (270 GT), the project's standard error-analysis subset | YOLOv9t | 152 | 117 | 118 | 0.5651 | 0.5630 | 0.5640 |
+| | YOLOv12n | **159** | **109** | **111** | **0.5933** | **0.5889** | **0.5911** |
 | Full test split (55 images, 443 GT) | YOLOv9t | 226 | 202 | 217 | 0.5280 | 0.5102 | 0.5189 |
 | | YOLOv12n | 224 | **170** | 219 | **0.5685** | 0.5056 | **0.5352** |
 
@@ -330,19 +328,17 @@ Two protocols were run, matching the two protocols in Astley's audit (Part 12.3)
 | YOLOv9t | **21.50 ± 0.45 ms** | 22.20 ± 0.47 ms (about 45 FPS) | 0.50 / 19.67 / 1.06 ms | 21.23 ms |
 | YOLOv12n | **21.19 ± 0.58 ms** | 21.88 ± 0.58 ms (about 46 FPS) | 0.49 / 19.06 / 1.25 ms | 20.80 ms |
 
-**These timings cannot be compared with the other four models.** YOLOv8n, YOLO11n, YOLOv5n and YOLOv7-tiny were timed on an i7-1255U running Windows with a different torch and ultralytics build. For example, YOLO11n's Protocol A figure is 67.65 ms there. Most of the roughly 3× gap is due to the hardware. Only YOLOv9t against YOLOv12n is a like-for-like comparison here, and the two are effectively tied. A fair six-model latency table needs all six checkpoints timed on one machine.
+**These timings cannot be compared with YOLOv5n and YOLOv7-tiny.** Those models were timed on an i7-1255U running Windows with a different torch and ultralytics build. Only YOLOv9t against YOLOv12n is a like-for-like comparison here, and the two are effectively tied. A fair latency table needs all checkpoints timed on one machine.
 
 ---
 
-## Part 11 — Consolidated six-model comparison (test split, 55 images, 443 trees)
+## Part 11 — Consolidated comparison of the half-subset models (test split, 55 images, 443 trees)
 
 | Model | Train data | Epochs | Train time | P | R | mAP@0.50 | mAP@0.50:0.95 | Count MAE | Predicted trees | Params | `best.pt` | Source |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| YOLOv8n | 1,191 full | 26 (early stop) | 2.19 h | 0.5288 | **0.6206** | 0.6000 | 0.2914 | 3.2727 | 433 (−10) | 3.01 M | 5.93 MB | Astley audit |
-| YOLO11n | 1,191 full | 30 | 2.42 h | 0.5764 | 0.6082 | **0.6083** | **0.2993** | 3.2364 | 455 (+12) | 2.58 M | 5.19 MB | Astley audit |
-| YOLOv5n (`yolov5nu`) | 595, seed 42 | 30 | 1.94 h | **0.5994** | 0.5485 | 0.5778 | 0.2807 | 3.2000 | 449 (**+6**) | 2.50 M | 5.00 MB | Astley audit |
+| YOLOv5n (`yolov5nu`) | 595, seed 42 | 30 | 1.94 h | **0.5994** | 0.5485 | **0.5778** | **0.2807** | 3.2000 | 449 (**+6**) | 2.50 M | 5.00 MB | Astley audit |
 | YOLOv7-tiny | 595, seed 42 | 30 | 2.24 h | 0.5635 | 0.5440 | 0.5460 | 0.2519 | 3.7636 | 564 (+121) | 6.01 M | 11.68 MB | Astley audit |
-| **YOLOv9t** | 594, seed 0 (groups) | **17 (0.5 h budget)** | **0.51 h** | 0.5052 | 0.5532 | 0.5256 | 0.2640 | **2.8545** | 428 (−15) | **2.01 M** | **4.82 MB** | this audit |
+| **YOLOv9t** | 594, seed 0 (groups) | **17 (0.5 h budget)** | **0.51 h** | 0.5052 | **0.5532** | 0.5256 | 0.2640 | **2.8545** | 428 (−15) | **2.01 M** | **4.82 MB** | this audit |
 | **YOLOv12n** | 594, seed 0 (groups) | **17 (0.5 h budget)** | **0.50 h** | 0.5219 | 0.5421 | 0.5383 | 0.2596 | 3.0364 | 394 (−49) | 2.57 M | 5.52 MB | this audit |
 
 **What can and cannot be concluded**
@@ -350,8 +346,7 @@ Two protocols were run, matching the two protocols in Astley's audit (Part 12.3)
   - YOLOv12n is better on validation detection (mAP50 0.553 vs 0.519), test precision, test F1 and false positives.
   - YOLOv9t is better on counting MAE (2.85 vs 3.04), is smaller, and has less count bias (−15 vs −49 trees).
 - **Against YOLOv5n and YOLOv7-tiny:** not controlled. Different subset (Part 4.4), 17 vs 30 epochs, a different machine, and ultralytics 8.4.177 vs 8.4.149 (YOLOv7-tiny also used a different framework).
-- **Against YOLOv8n and YOLO11n:** half the data, about 57% of the epochs, and a different machine.
-- **What does hold under every one of these handicaps:** YOLOv9t reached the **lowest counting MAE of all six models**, and YOLOv12n the **fewest false positives** on the shared 30-image analysis. Both had the least training.
+- **Across the four half-subset models:** YOLOv5n has the best test detection (P, mAP@0.50, mAP@0.50:0.95). YOLOv9t has the lowest counting MAE. YOLOv9t and YOLOv12n reached their scores with 17 epochs against 30.
 
 ---
 
@@ -366,7 +361,7 @@ Two protocols were run, matching the two protocols in Astley's audit (Part 12.3)
 | 5 | `train_summary.json` | Recorded `early_stopped: true` | `epochs_done < epochs` was treated as early stopping, but the stop came from the time budget | Replaced with `stop_reason: "time budget (0.5 h)"` in code and both JSON files | Labelling only |
 | 6 | Latency JSON | Hardware recorded as `x86_64` | `platform.processor()` is empty on Linux | Reads `/proc/cpuinfo` instead; both JSON files corrected to "12th Gen Intel(R) Core(TM) i5-12500H" | Labelling only |
 | 7 | Mosaic schedule | Mosaic closed after epoch 8 (YOLOv9t) and after epoch 7 (YOLOv12n) | `close_mosaic=10` applies to the re-planned 17–18-epoch run | Documented (Part 5); not changed after the fact | Training dynamics differ from the 30-epoch runs |
-| 8 | Ultralytics | `optimizer=auto found, ignoring lr0=0.01` | Expected behaviour; the same happened in all baseline runs | n/a | AdamW lr 0.002, the same as the baselines |
+| 8 | Ultralytics | `optimizer=auto found, ignoring lr0=0.01` | Expected Ultralytics behaviour with `optimizer=auto` | n/a | AdamW lr 0.002 for both models |
 | 9 | `train_summary.json`, `REPORT.md` | YOLOv9t best epoch reported as 16 | The summary code used the 0.1·mAP50 + 0.9·mAP50-95 fitness from older Ultralytics; 8.4.x uses mAP50-95 only. Confirmed from the fitness stored in `best.pt` (0.27203 = epoch 17) | `_best_epoch_from_results()` now uses mAP50-95; JSON and reports corrected to epoch 17 | Labelling only; all evaluations used the real `best.pt` |
 
 ---
@@ -377,12 +372,12 @@ Two protocols were run, matching the two protocols in Astley's audit (Part 12.3)
    - In-training validation at the best epoch (17) for YOLOv9t was P 0.5268, R 0.4818, mAP50 0.5188, mAP50-95 0.2720.
    - Standalone re-validation of `best.pt` (`val_metrics.json`) gave P 0.5294, R 0.4839, mAP50 0.5188, mAP50-95 0.2719.
    - For YOLOv12n the two sets are 0.5311 / 0.5440 / 0.5527 / 0.2759 (in training) against 0.5309 / 0.5440 / 0.5525 / 0.2761 (standalone).
-   - The same small shift happens for YOLO11n (Astley's audit, Part 14.2, item 3). It comes from FP16 checkpoint storage and layer fusion at reload. The reports use the standalone numbers.
+   - The small shift comes from FP16 checkpoint storage and layer fusion at reload (also described in Astley's audit, Part 14.2, item 3). The reports use the standalone numbers.
 2. **Parameter counts.**
    - `report_details.json` counts every tensor in the loaded model: YOLOv9t 2,109,523 and YOLOv12n 2,583,091.
    - Ultralytics' printed summary gives 2,005,603 and 2,568,243 unfused. This audit cites the Ultralytics summary, and `REPORT.md` §5 cites the `report_details.json` figures (2.11 M and 2.58 M).
    - Both are correct; they count slightly different things (DFL/anchor buffers, fused BN).
-3. **Baseline numbers** in `RESULTS.md` and `REPORT.md` are copied from `docs/yolov8n_vs_yolo11n_comparison.md`. They match Astley's audit for test P, R, mAP and MAE.
+3. **YOLOv5n and YOLOv7-tiny numbers** in Part 11 are quoted from Astley's audit (Parts 9.4, 10.6 and 12.2).
 4. **Training durations.**
    - YOLOv9t: 1,833.9 s (script wall-clock) against 1,815.3 s (internal epoch timer, 0.504 h in log).
    - YOLOv12n: 1,798.8 s (wall-clock) against 1,789.5 s (internal, 0.497 h).
@@ -440,6 +435,6 @@ OMP_NUM_THREADS=8 MKL_NUM_THREADS=8 .venv/bin/python comparison_models/yolov12/t
 
 1. **External SelvaBox evaluation (`testdataset100`).** Run YOLOv9t and YOLOv12n `best.pt` on the 100 SelvaBox test tiles (1777 × 1777, 8,111 crowns) **without retraining**, as Astley requested.
    - Report detection metrics, counting MAE and per-site results.
-   - Decide on one inference resolution and use it for all six models. Native 1777 px tiles at `imgsz=416` shrink crowns about 4.3×, so for example 416 against 1024 or tiled inference.
+   - Decide on one inference resolution and use it for every model evaluated. Native 1777 px tiles at `imgsz=416` shrink crowns about 4.3×, so for example 416 against 1024 or tiled inference.
 2. **Optional fair re-run.** If time allows, retrain YOLOv9t and YOLOv12n for the full 30 epochs, one at a time, and ideally on Astley's seed-42 subset. That would make the comparison with YOLOv5n and YOLOv7-tiny controlled.
-3. **Optional single-machine latency.** Time all six `best.pt` files on one machine with Protocol A.
+3. **Optional single-machine latency.** Time every `best.pt` file on one machine with Protocol A.

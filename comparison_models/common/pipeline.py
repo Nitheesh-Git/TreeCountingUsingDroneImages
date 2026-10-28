@@ -13,7 +13,7 @@ per-file symlinks (copies if symlinks are unavailable) to the original images
 and labels, so:
   * the original dataset and its data.yaml are never modified,
   * Ultralytics writes its *.cache files inside the view, not next to the
-    original labels (which would clobber the baselines' full-train cache),
+    original labels (which would clobber the full-train cache),
   * valid/test are the original, unchanged splits.
 """
 
