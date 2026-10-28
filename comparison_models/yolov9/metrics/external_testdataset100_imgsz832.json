@@ -1,0 +1,102 @@
+{
+  "model": "YOLOv9t",
+  "weights": "comparison_models/yolov9/runs/yolov9t_half_subset/weights/best.pt",
+  "dataset": "SelvaBox testdataset100 (100 tiles, 1777x1777, 8,111 crowns)",
+  "imgsz": 832,
+  "conf_for_counting": 0.25,
+  "max_det": 1000,
+  "detection": {
+    "precision": 0.4556,
+    "recall": 0.2743,
+    "mAP50": 0.2593,
+    "mAP50-95": 0.1066,
+    "ultralytics_speed_ms": {
+      "preprocess": 1.99,
+      "inference": 70.71,
+      "loss": 0.0,
+      "postprocess": 5.67
+    }
+  },
+  "counting_and_matching": {
+    "images": 100,
+    "total_ground_truth": 8111,
+    "total_predicted": 1450,
+    "net_difference": -6661,
+    "net_difference_pct": -82.12,
+    "MAE": 66.77,
+    "RMSE": 105.297,
+    "bias": -66.61,
+    "mean_relative_error": 0.6599,
+    "TP": 968,
+    "FP": 482,
+    "FN": 7143,
+    "precision_conf025": 0.6676,
+    "recall_conf025": 0.1193,
+    "F1_conf025": 0.2025
+  },
+  "by_site": {
+    "brazil_zf2": {
+      "images": 13,
+      "total_ground_truth": 1641,
+      "total_predicted": 378,
+      "net_difference": -1263,
+      "net_difference_pct": -76.97,
+      "MAE": 97.154,
+      "RMSE": 101.205,
+      "bias": -97.154,
+      "mean_relative_error": 0.7611,
+      "TP": 280,
+      "FP": 98,
+      "FN": 1361,
+      "precision_conf025": 0.7407,
+      "recall_conf025": 0.1706,
+      "F1_conf025": 0.2774
+    },
+    "ecuador_tiputini": {
+      "images": 60,
+      "total_ground_truth": 1095,
+      "total_predicted": 490,
+      "net_difference": -605,
+      "net_difference_pct": -55.25,
+      "MAE": 10.35,
+      "RMSE": 13.035,
+      "bias": -10.083,
+      "mean_relative_error": 0.5382,
+      "TP": 254,
+      "FP": 236,
+      "FN": 841,
+      "precision_conf025": 0.5184,
+      "recall_conf025": 0.232,
+      "F1_conf025": 0.3205
+    },
+    "panama_aguasalud": {
+      "images": 27,
+      "total_ground_truth": 5375,
+      "total_predicted": 582,
+      "net_difference": -4793,
+      "net_difference_pct": -89.17,
+      "MAE": 177.519,
+      "RMSE": 189.091,
+      "bias": -177.519,
+      "mean_relative_error": 0.8816,
+      "TP": 434,
+      "FP": 148,
+      "FN": 4941,
+      "precision_conf025": 0.7457,
+      "recall_conf025": 0.0807,
+      "F1_conf025": 0.1457
+    }
+  },
+  "latency_cpu_ms": {
+    "inference_mean": 70.6,
+    "end_to_end_mean_incl_png_read": 128.7
+  },
+  "per_image_csv": "comparison_models/yolov9/metrics/external_testdataset100_imgsz832.csv",
+  "environment": {
+    "python": "3.12.13",
+    "ultralytics": "8.4.177",
+    "torch": "2.14.1+cpu",
+    "cpu": "12th Gen Intel(R) Core(TM) i5-12500H",
+    "cuda_available": false
+  }
+}
