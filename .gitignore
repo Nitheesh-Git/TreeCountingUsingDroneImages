@@ -24,3 +24,11 @@ docs/comprehensive_model_experiment_audit.md
 docs/external_selvabox_test100_evaluation_report.md
 External validation v5 and v7/*/*/README.md
 External validation v5 and v7/testdataset100/validation_report.txt
+
+# Comparison models: generated dataset view, pretrained weights, runs, predictions
+comparison_models/data/
+comparison_models/*/weights/
+comparison_models/*/runs/
+comparison_models/*/predictions/
+comparison_models/external_dataset/*
+!comparison_models/external_dataset/README.md

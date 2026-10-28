@@ -1,0 +1,243 @@
+{
+  "seed": 0,
+  "fraction": 0.5,
+  "method": "group-level (Roboflow augmentation triplets kept together), stratified by site, held-out-overlap groups excluded",
+  "excluded_groups": [
+    "CLBJ_035_2019_jpeg",
+    "DEJU_010_2019_jpeg",
+    "DEJU_011_2019_jpeg",
+    "DELA_010_2018_jpeg",
+    "DELA_011_2019_jpeg",
+    "DELA_012_2019_jpeg",
+    "DSNY_002_2019_jpeg",
+    "DSNY_005_2018_jpeg",
+    "DSNY_006_2018_jpeg",
+    "DSNY_006_2019_jpeg"
+  ],
+  "validation": {
+    "train": {
+      "images": 1191,
+      "label_files": 1191,
+      "orphan_label_files": 0,
+      "images_with_label_problems": 0,
+      "problem_examples": {},
+      "image_sizes": {
+        "416x416": 1191
+      }
+    },
+    "valid": {
+      "images": 116,
+      "label_files": 116,
+      "orphan_label_files": 0,
+      "images_with_label_problems": 0,
+      "problem_examples": {},
+      "image_sizes": {
+        "416x416": 116
+      }
+    },
+    "test": {
+      "images": 55,
+      "label_files": 55,
+      "orphan_label_files": 0,
+      "images_with_label_problems": 0,
+      "problem_examples": {},
+      "image_sizes": {
+        "416x416": 55
+      }
+    }
+  },
+  "full_train": {
+    "images": 1191,
+    "source_groups": 375,
+    "instances": 10002,
+    "images_without_trees": 39,
+    "instances_per_image": {
+      "mean": 8.4,
+      "median": 7,
+      "p90": 16,
+      "max": 31
+    },
+    "box_width_px": {
+      "median": 55.0,
+      "p10": 24.0,
+      "p90": 102.0
+    },
+    "box_height_px": {
+      "median": 53.0,
+      "p10": 23.0,
+      "p90": 100.0
+    },
+    "box_area_px": {
+      "median": 3048.0,
+      "p10": 552.0,
+      "p90": 9432.5
+    },
+    "box_size_share": {
+      "large (>=96^2 px)": 0.1062,
+      "medium (32^2-96^2 px)": 0.6578,
+      "small (<32^2 px)": 0.2361
+    },
+    "sites": {
+      "ABBY": 105,
+      "BART": 174,
+      "BLAN": 15,
+      "BONA": 51,
+      "CLBJ": 99,
+      "DEJU": 201,
+      "DELA": 126,
+      "DSNY": 99,
+      "GRSM": 30,
+      "GUAN": 24,
+      "HARV": 21,
+      "HEAL": 63,
+      "JERC": 63,
+      "SJER": 60,
+      "TEAK": 60
+    }
+  },
+  "subset_train": {
+    "images": 594,
+    "source_groups": 188,
+    "instances": 5190,
+    "images_without_trees": 15,
+    "instances_per_image": {
+      "mean": 8.74,
+      "median": 8.0,
+      "p90": 16,
+      "max": 31
+    },
+    "box_width_px": {
+      "median": 54.0,
+      "p10": 24.0,
+      "p90": 101.0
+    },
+    "box_height_px": {
+      "median": 53.0,
+      "p10": 23.0,
+      "p90": 99.0
+    },
+    "box_area_px": {
+      "median": 2912.0,
+      "p10": 572.0,
+      "p90": 9375.0
+    },
+    "box_size_share": {
+      "large (>=96^2 px)": 0.104,
+      "medium (32^2-96^2 px)": 0.6491,
+      "small (<32^2 px)": 0.2468
+    },
+    "sites": {
+      "ABBY": 54,
+      "BART": 90,
+      "BLAN": 6,
+      "BONA": 24,
+      "CLBJ": 51,
+      "DEJU": 99,
+      "DELA": 63,
+      "DSNY": 48,
+      "GRSM": 15,
+      "GUAN": 12,
+      "HARV": 12,
+      "HEAL": 30,
+      "JERC": 30,
+      "SJER": 30,
+      "TEAK": 30
+    }
+  },
+  "valid": {
+    "images": 116,
+    "source_groups": 113,
+    "instances": 932,
+    "images_without_trees": 2,
+    "instances_per_image": {
+      "mean": 8.03,
+      "median": 7.0,
+      "p90": 15,
+      "max": 39
+    },
+    "box_width_px": {
+      "median": 54.0,
+      "p10": 22.0,
+      "p90": 108.0
+    },
+    "box_height_px": {
+      "median": 56.0,
+      "p10": 21.0,
+      "p90": 108.0
+    },
+    "box_area_px": {
+      "median": 3094.0,
+      "p10": 462.0,
+      "p90": 11115.0
+    },
+    "box_size_share": {
+      "large (>=96^2 px)": 0.1438,
+      "medium (32^2-96^2 px)": 0.5794,
+      "small (<32^2 px)": 0.2768
+    },
+    "sites": {
+      "ABBY": 11,
+      "BART": 15,
+      "BLAN": 4,
+      "BONA": 5,
+      "CLBJ": 7,
+      "DEJU": 20,
+      "DELA": 19,
+      "DSNY": 7,
+      "GRSM": 1,
+      "GUAN": 2,
+      "HARV": 3,
+      "HEAL": 3,
+      "JERC": 6,
+      "SJER": 5,
+      "TEAK": 8
+    }
+  },
+  "test": {
+    "images": 55,
+    "source_groups": 54,
+    "instances": 443,
+    "images_without_trees": 2,
+    "instances_per_image": {
+      "mean": 8.05,
+      "median": 8,
+      "p90": 15,
+      "max": 22
+    },
+    "box_width_px": {
+      "median": 48.0,
+      "p10": 23.0,
+      "p90": 105.0
+    },
+    "box_height_px": {
+      "median": 49.0,
+      "p10": 23.0,
+      "p90": 101.0
+    },
+    "box_area_px": {
+      "median": 2349.0,
+      "p10": 550.0,
+      "p90": 10167.5
+    },
+    "box_size_share": {
+      "large (>=96^2 px)": 0.1264,
+      "medium (32^2-96^2 px)": 0.6095,
+      "small (<32^2 px)": 0.2641
+    },
+    "sites": {
+      "ABBY": 8,
+      "BART": 10,
+      "BONA": 1,
+      "CLBJ": 2,
+      "DEJU": 7,
+      "DELA": 3,
+      "DSNY": 6,
+      "GRSM": 1,
+      "GUAN": 2,
+      "HEAL": 4,
+      "JERC": 2,
+      "SJER": 5,
+      "TEAK": 4
+    }
+  }
+}

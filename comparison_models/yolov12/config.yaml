@@ -1,0 +1,18 @@
+# YOLOv12n comparison-model configuration.
+# Training settings mirror the YOLO11n Phase 2 run (src/train_yolov11.py) except
+# for the training data (594-image half subset, see common/subset_stats.md).
+model_name: YOLOv12n
+pretrained: yolo12n.pt            # official Ultralytics asset (COCO-pretrained), stored in weights/ (git-ignored)
+implementation: "Ultralytics integration of YOLO12 (sunsmarterjie/yolov12), nano variant"
+run_name: yolov12n_half_subset
+
+train:
+  imgsz: 416
+  epochs: 30
+  patience: 5
+  batch: 8
+  device: cpu               # protocol default; override with --device 0 for the GPU
+  seed: 0
+  deterministic: true
+  workers: 4
+  optimizer: auto           # Ultralytics default, same as YOLOv8n / YOLO11n runs

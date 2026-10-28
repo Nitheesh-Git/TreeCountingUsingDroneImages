@@ -1,0 +1,35 @@
+{
+  "model": "YOLOv12n",
+  "weights": "comparison_models/yolov12/runs/yolov12n_half_subset/weights/best.pt",
+  "split": "val",
+  "detection": {
+    "precision": 0.5309,
+    "recall": 0.544,
+    "mAP50": 0.5525,
+    "mAP50-95": 0.2761,
+    "ultralytics_speed_ms": {
+      "preprocess": 0.48,
+      "inference": 19.23,
+      "loss": 0.0,
+      "postprocess": 1.08
+    }
+  },
+  "counting": {
+    "images": 116,
+    "conf_threshold": 0.25,
+    "total_ground_truth": 932,
+    "total_predicted": 855,
+    "net_difference": -77,
+    "MAE": 2.9914,
+    "RMSE": 4.3619,
+    "mean_error_bias": -0.6638,
+    "per_image_csv": "comparison_models/yolov12/metrics/val_counting.csv"
+  },
+  "environment": {
+    "python": "3.12.13",
+    "ultralytics": "8.4.177",
+    "torch": "2.14.1+cpu",
+    "cpu": "12th Gen Intel(R) Core(TM) i5-12500H",
+    "cuda_available": false
+  }
+}
