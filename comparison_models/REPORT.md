@@ -1,22 +1,22 @@
-# Detailed Comparison Report: YOLOv9t and YOLOv12n vs YOLOv8n and YOLO11n
+# Detailed Comparison Report: YOLOv9t vs YOLOv12n
 
 **Project:** Tree Counting Using Drone Images
 **Dataset:** Tree-Top-View (Roboflow v2, NEON aerial imagery, 1 class `tree-top`, 416 × 416 px)
-**Reference models:** YOLOv8n (baseline), YOLO11n (proposed model). Their numbers are taken from
-`docs/yolov8n_vs_yolo11n_comparison.md`.
-**Comparison models:** YOLOv9t, YOLOv12n (this folder)
+**Models:** YOLOv9t (`yolov9t.pt`) and YOLOv12n (`yolo12n.pt`), both COCO-pretrained and fine-tuned on the dataset
 
-> **Important caveat for every table below.** The models were not trained under identical conditions:
+> **Training setup (applies to every table below).** Both models were trained under identical conditions, so
+> the comparison between them is controlled:
 >
-> | | YOLOv8n / YOLO11n | YOLOv9t / YOLOv12n |
-> |---|---|---|
-> | Training images | 1,191 (full split) | 594 (half subset) |
-> | Training length | up to 30 epochs (26 and 30 completed) | 0.5 h CPU budget each → 17 epochs |
-> | Training hardware | Intel i7-1255U, one model at a time | Intel i5-12500H, both models at the same time |
+> | Setting | YOLOv9t and YOLOv12n |
+> |---|---|
+> | Training images | 594 (reproducible half subset of the 1,191-image train split, seed 0) |
+> | Validation / test | original, unchanged 116 / 55 images |
+> | Training length | 0.5 h CPU time budget each → 17 epochs (deadline constraint) |
+> | Hardware | Intel i5-12500H CPU; both models trained at the same time, 8 threads each |
+> | Settings | 416 px, batch 8, seed 0, optimizer auto (AdamW lr 0.002), same augmentation |
 >
-> The results therefore show how each model performs **under its own training setup**. They do not isolate
-> the effect of architecture alone. The comparison models had less data and fewer epochs, so their
-> scores are probably a lower bound on what they could reach.
+> Because each model had only half the training data and 17 epochs, these scores are a conservative
+> estimate of what the two architectures can reach.
 
 ---
 
@@ -34,32 +34,31 @@ The report uses five groups of parameters:
 
 ---
 
-## 2. Detection accuracy (test split: 55 images, 443 trees)
+## 2. Detection accuracy
 
 Ultralytics validation protocol: conf 0.001, NMS IoU 0.7, mAP computed over the full precision–recall curve.
+F1 = 2PR / (P + R).
+
+**Test split (55 images, 443 trees)**
 
 | Model | Precision | Recall | F1 | mAP@0.5 | mAP@0.5:0.95 |
 |---|---|---|---|---|---|
-| YOLOv8n | 0.5288 | **0.6206** | 0.5710 | 0.6000 | 0.2914 |
-| YOLO11n | **0.5764** | 0.6082 | **0.5919** | **0.6083** | **0.2993** |
-| YOLOv9t | 0.5052 | 0.5532 | 0.5281 | 0.5256 | 0.2640 |
-| YOLOv12n | 0.5219 | 0.5421 | 0.5318 | 0.5383 | 0.2596 |
+| YOLOv9t | 0.5052 | **0.5532** | 0.5281 | 0.5256 | **0.2640** |
+| YOLOv12n | **0.5219** | 0.5421 | **0.5318** | **0.5383** | 0.2596 |
 
-F1 = 2PR / (P + R). For YOLOv8n and YOLO11n it is computed from the reported P and R.
+**Validation split (116 images, 932 trees), used to pick the best checkpoint**
 
-**Validation split (116 images), used to pick the best checkpoint:**
-
-| Model | Precision | Recall | mAP@0.5 | mAP@0.5:0.95 | Count MAE |
+| Model | Precision | Recall | F1 | mAP@0.5 | mAP@0.5:0.95 |
 |---|---|---|---|---|---|
-| YOLOv9t | 0.5294 | 0.4839 | 0.5188 | 0.2719 | 3.40 |
-| YOLOv12n | 0.5309 | 0.5440 | 0.5525 | 0.2761 | 2.99 |
+| YOLOv9t | 0.5294 | 0.4839 | 0.5056 | 0.5188 | 0.2719 |
+| YOLOv12n | **0.5309** | **0.5440** | **0.5374** | **0.5525** | **0.2761** |
 
 **Observations**
-- YOLO11n is the best model on every detection metric except recall, where YOLOv8n is highest.
-- On test mAP@0.5, YOLOv12n trails YOLO11n by 0.07 and YOLOv9t by 0.08. Both comparison models had
-  half the data and about 57% of the epochs.
-- Between the comparison models, YOLOv12n is ahead on precision, F1 and mAP@0.5. YOLOv9t is
-  slightly ahead on recall and mAP@0.5:0.95. On validation, YOLOv12n is ahead on every metric.
+- **YOLOv12n is the stronger detector overall.** It is ahead on every validation metric. On the test split it is
+  ahead on precision, F1 and mAP@0.5.
+- YOLOv9t is slightly ahead on test recall (+0.011) and test mAP@0.5:0.95 (+0.004). Both margins are small
+  for a 55-image test set.
+- The gap is larger on validation (mAP@0.5 +0.034 for YOLOv12n) than on test (+0.013).
 
 ---
 
@@ -69,18 +68,16 @@ Tree count = number of predicted boxes at confidence ≥ 0.25, the same rule as 
 
 | Model | Predicted / GT trees | Net difference | **MAE** (trees/img) | RMSE | Bias (mean signed error) |
 |---|---|---|---|---|---|
-| YOLOv8n | 433 / 443 | −10 (−2.3%) | 3.27 | n/a | −0.18 |
-| YOLO11n | 455 / 443 | +12 (+2.7%) | 3.24 | n/a | +0.22 |
-| YOLOv9t | 428 / 443 | −15 (−3.4%) | **2.85** | 4.04 | −0.27 |
+| YOLOv9t | 428 / 443 | −15 (−3.4%) | **2.85** | 4.04 | **−0.27** |
 | YOLOv12n | 394 / 443 | −49 (−11.1%) | 3.04 | **4.02** | −0.89 |
 
-Baseline bias is the reported net difference divided by 55. The baselines did not report RMSE.
+Validation-split MAE: YOLOv9t 3.40, YOLOv12n 2.99.
 
-**Count accuracy per image (comparison models)**
+**Count accuracy per image**
 
 | Model | Exact count | Within ±1 | Within ±2 | Over-counted images | Under-counted images | Mean relative error |
 |---|---|---|---|---|---|---|
-| YOLOv9t | 16.4% | 40.0% | 58.2% | 21 | 25 | 39.3% |
+| YOLOv9t | 16.4% | **40.0%** | **58.2%** | 21 | 25 | **39.3%** |
 | YOLOv12n | 16.4% | 38.2% | 52.7% | 20 | 26 | 45.9% |
 
 **MAE by tree density (trees per image in ground truth)**
@@ -104,72 +101,67 @@ Baseline bias is the reported net difference divided by 55. The baselines did no
 | GRSM (1) | 2.00 | 1.00 | | | |
 
 **Observations**
-- YOLOv9t has the **lowest counting MAE of all four models** (2.85). It is better than YOLO11n by 0.38
-  trees per image, even though its mAP is lower.
-- Counting MAE and mAP do not always rank models the same way. MAE only checks how many boxes there
-  are, not where they are. Over-counting in one image and under-counting in another can each still
-  produce a count close to the truth.
-- YOLOv12n systematically **under-counts** (−49 trees, bias −0.89). It is the most conservative of the four.
+- **YOLOv9t counts trees more accurately on the test split.** It has the lower MAE (2.85 vs 3.04), the smaller
+  total error (−15 vs −49 trees), and more images within ±1 and ±2 trees.
+- YOLOv9t has lower mAP but better counts. The per-image count error equals |FP − FN|, so false alarms and
+  missed trees in the same image cancel out. YOLOv9t makes more false alarms (section 4), and these offset
+  its missed trees.
+- YOLOv12n systematically **under-counts** (bias −0.89 trees per image).
 - Error grows with density for both models: dense canopies (11+ trees) roughly triple the MAE of sparse
-  plots. DEJU (dense boreal forest, Alaska) is the hardest site for YOLOv9t.
+  plots. YOLOv9t is better on sparse and medium plots, and YOLOv12n on dense ones. DEJU (dense boreal
+  forest, Alaska) is the hardest site for YOLOv9t.
+- On the validation split the order reverses (YOLOv12n 2.99 vs YOLOv9t 3.40). The counting advantage is not
+  consistent across splits.
 - MAE by site is based on very few images per site (1–10), so treat it as an indication only.
 
 ---
 
 ## 4. Error analysis: TP / FP / FN
 
-The same algorithm as `src/analyze_predictions_yolov11.py`: predictions sorted by confidence and matched
-one-to-one to ground truth at IoU ≥ 0.5, conf ≥ 0.25.
+Predictions are sorted by confidence and matched one-to-one to ground truth at IoU ≥ 0.5, conf ≥ 0.25. This is
+the same greedy algorithm as the project's existing `src/analyze_predictions*.py` scripts.
 
-**First 30 sorted validation images (the same subset used for YOLOv8n and YOLO11n)**
+**First 30 sorted validation images (270 trees), the project's standard error-analysis subset**
 
 | Model | TP | FP | FN | Precision | Recall | F1 |
 |---|---|---|---|---|---|---|
-| YOLOv8n | 166 | 141 | 104 | 0.5407 | 0.6148 | 0.5754 |
-| YOLO11n | **179** | 119 | **91** | **0.6007** | **0.6630** | **0.6303** |
 | YOLOv9t | 152 | 117 | 118 | 0.5651 | 0.5630 | 0.5640 |
-| YOLOv12n | 159 | **109** | 111 | 0.5933 | 0.5889 | 0.5911 |
+| YOLOv12n | **159** | **109** | **111** | **0.5933** | **0.5889** | **0.5911** |
 
-**Full test split (55 images, 443 trees). Comparison models only; this was not computed for the baselines.**
+**Full test split (55 images, 443 trees)**
 
 | Model | TP | FP | FN | Precision | Recall | F1 |
 |---|---|---|---|---|---|---|
-| YOLOv9t | 226 | 202 | 217 | 0.5280 | 0.5102 | 0.5189 |
+| YOLOv9t | **226** | 202 | **217** | 0.5280 | **0.5102** | 0.5189 |
 | YOLOv12n | 224 | **170** | 219 | **0.5685** | 0.5056 | **0.5352** |
 
 **Observations**
-- **YOLOv12n has the fewest false positives of all four models** on the 30-image subset (109). On the
-  test split it has 32 fewer false alarms than YOLOv9t while finding almost the same number of trees.
-  This fits its attention-based design, which suppresses background such as soil and shrubs.
-- Both comparison models have more **false negatives** (missed trees) than YOLO11n. That is the main
-  reason for their lower recall and mAP, and it is what you'd expect from less training data and fewer epochs.
-- In counting terms, YOLOv9t's extra false positives partly cancel out its misses, which is why its count
-  MAE is lower even though its box-level precision is lower.
+- **YOLOv12n makes far fewer false alarms.** On the test split it has 32 fewer false positives (170 vs 202)
+  and finds almost the same number of real trees (224 vs 226). This fits its attention-based design, which
+  helps it suppress background such as soil, shadows and shrubs.
+- On the 30-image validation subset, YOLOv12n is better on all three counts: more TP, fewer FP and fewer FN.
+- Both models miss about half of the trees at conf 0.25 (FN ≈ 217–219 of 443). Missed trees are the main
+  source of error for both. That is expected with half the training data and 17 epochs.
 
 ---
 
 ## 5. Model efficiency
 
-| Model | Parameters | GFLOPs (640 px) | GFLOPs (416 px) | Checkpoint (best.pt) | CPU inference latency |
-|---|---|---|---|---|---|
-| YOLOv8n | 3.2 M | 8.7 | n/a | 6.2 MB | 72.4 ± 16.5 ms (i7-1255U) |
-| YOLO11n | 2.6 M | 6.5 | n/a | 5.4 MB | 67.7 ± 4.8 ms (i7-1255U) |
-| YOLOv9t | **2.11 M** | 8.37 | 3.54 | **4.82 MB** | 21.5 ± 0.5 ms (i5-12500H) |
-| YOLOv12n | 2.58 M | 7.53 | **2.94** | 5.52 MB | **21.2 ± 0.6 ms** (i5-12500H) |
+| Model | Parameters | GFLOPs (640 px) | GFLOPs (416 px) | Checkpoint (best.pt) | CPU latency, pure inference | CPU latency, total |
+|---|---|---|---|---|---|---|
+| YOLOv9t | **2.11 M** | 8.37 | 3.54 | **4.82 MB** | 21.50 ± 0.45 ms | 22.20 ± 0.47 ms |
+| YOLOv12n | 2.58 M | **7.53** | **2.94** | 5.52 MB | **21.19 ± 0.58 ms** | **21.88 ± 0.58 ms** |
 
-Latency protocol: 30 test images × 3 passes after warm-up, batch 1, 416 px, PyTorch on CPU. The baselines'
-GFLOPs are the reported Ultralytics nominal values. The comparison models' GFLOPs were measured on the trained,
-single-class models with the Ultralytics profiler.
+Latency protocol: 30 test images × 3 passes after 5 warm-up runs, batch 1, 416 px, PyTorch on the
+i5-12500H CPU, with no other job running. GFLOPs were measured on the trained single-class models with the
+Ultralytics profiler.
 
 **Observations**
-- **YOLOv9t is the smallest model**: 34% fewer parameters than YOLOv8n and 19% fewer than YOLO11n, with
-  the smallest checkpoint. It has many small layers (918 modules, against 466 for YOLOv12n), so the low
-  parameter count does not lead to fewer FLOPs.
-- **YOLOv12n needs the least compute at 416 px** (2.94 GFLOPs, against 3.54 for YOLOv9t).
-- On the same CPU, YOLOv9t and YOLOv12n have practically the same latency (about 21 ms, roughly 47 FPS).
-- **The latency numbers cannot be compared across the two machines.** The baselines were timed on a
-  different CPU and software stack. The roughly 3× gap reflects the hardware, not the models. A fair latency
-  comparison needs all four checkpoints timed on one machine.
+- **YOLOv9t is the smaller model:** 18% fewer parameters and a 13% smaller checkpoint.
+- **YOLOv12n needs less compute:** 17% fewer GFLOPs at 416 px. YOLOv9t has many small layers (918 modules
+  against 466), so its low parameter count does not lead to fewer FLOPs.
+- **Speed is effectively tied.** Both run at about 21–22 ms per image, roughly 45–47 FPS on a laptop CPU.
+  YOLOv12n is 0.3 ms faster, which is within the measurement noise.
 
 ---
 
@@ -177,12 +169,11 @@ single-class models with the Ultralytics profiler.
 
 | Model | Training images | Epochs completed | Best epoch | Training time | Time per epoch | Stopped by |
 |---|---|---|---|---|---|---|
-| YOLOv8n | 1,191 | 26 | 21 | 2.19 h | ≈ 300 s | early stopping (patience 5) |
-| YOLO11n | 1,191 | 30 | 30 | 2.41 h | ≈ 290 s | max epochs |
 | YOLOv9t | 594 | 17 | 17 | 0.51 h | ≈ 107 s* | 0.5 h time budget |
 | YOLOv12n | 594 | 17 | 16 | 0.50 h | ≈ 105 s* | 0.5 h time budget |
 
 \* Both models trained at the same time with 8 CPU threads each. Trained alone, YOLOv9t took ≈ 52 s per epoch.
+The best checkpoint is the epoch with the highest validation mAP@0.5:0.95, which is Ultralytics' fitness.
 
 **Validation mAP@0.5 by epoch**
 
@@ -191,55 +182,52 @@ single-class models with the Ultralytics profiler.
 | YOLOv9t | 0.207 | 0.294 | 0.435 | 0.436 | 0.409 | 0.497 | 0.438 | 0.506 | 0.526 | **0.519**† |
 | YOLOv12n | 0.269 | 0.246 | 0.414 | 0.383 | 0.474 | 0.496 | 0.495 | 0.532 | **0.553** | 0.551 |
 
-† YOLOv9t's best checkpoint is epoch 17: its mAP50-95 (0.2720) is the highest, although epoch 16 had the higher mAP50.
-For reference, YOLO11n on the full data reached 0.413 at epoch 5, 0.510 at epoch 10, and 0.571 at epoch 30.
+† YOLOv9t's best checkpoint is epoch 17: its mAP@0.5:0.95 (0.2720) is the highest, although epoch 16 had the higher mAP@0.5.
 
 **Observations**
-- Both comparison models were **still improving** when the time budget stopped them. The best epoch was the
-  last one (YOLOv9t, 17) or the second to last (YOLOv12n, 16), and the best checkpoint is chosen by mAP50-95,
-  Ultralytics' fitness. With the full 30 epochs they would very likely score higher.
-- Despite having half the data, both learned at a similar rate to YOLO11n in the early epochs. Both curves
-  fluctuate from epoch to epoch. YOLOv12n is ahead in most epochs from epoch 9 onward and in each of the last three.
-- Under the time budget, Ultralytics re-planned each run to 17–18 epochs, so `close_mosaic=10` turned
-  mosaic augmentation off after epoch 8 (YOLOv9t) and after epoch 7 (YOLOv12n). Mosaic was therefore off for
-  more than half of each run, against the last 10 of 30 epochs for the baselines.
-- Training both models together cost about 1 h of CPU time in total, against about 4.6 h for the two
-  baselines (with twice the data and more epochs).
+- Both models were **still improving** when the time budget stopped them. The best epoch was the last one
+  (YOLOv9t) or the second to last (YOLOv12n). With the full 30 epochs both would very likely score higher.
+- YOLOv12n starts faster (0.269 vs 0.207 after epoch 1). Both curves fluctuate from epoch to epoch.
+  YOLOv12n is ahead in most epochs from epoch 9 onward and in each of the last three.
+- Under the time budget, Ultralytics re-planned each run to 17–18 epochs, so `close_mosaic=10` turned mosaic
+  augmentation off after epoch 8 (YOLOv9t) and after epoch 7 (YOLOv12n).
+- Both models cost the same to train: about 30 minutes each, about 1 hour of CPU time in total.
 
 ---
 
 ## 7. Summary: which model wins on what
 
-| Criterion | Best model |
+| Criterion | Better model |
 |---|---|
-| Detection accuracy (mAP@0.5, mAP@0.5:0.95, precision, F1) | **YOLO11n** |
-| Recall (fewest missed trees) | **YOLOv8n** (test) / **YOLO11n** (30-image analysis) |
-| Counting accuracy (MAE) | **YOLOv9t** (2.85) |
+| Detection accuracy (mAP@0.5, precision, F1; all validation metrics) | **YOLOv12n** |
+| mAP@0.5:0.95 and recall on the test split | **YOLOv9t** (by a small margin) |
+| Counting accuracy on the test split (MAE, total count, within ±1/±2) | **YOLOv9t** |
+| Counting accuracy on the validation split (MAE) | **YOLOv12n** |
 | Fewest false alarms (FP) | **YOLOv12n** |
+| Dense plots (11+ trees) | **YOLOv12n** |
 | Smallest model (parameters, file size) | **YOLOv9t** |
-| Lowest compute (GFLOPs) | **YOLOv12n** at 416 px |
-| Best of the two comparison models overall | **YOLOv12n** on detection and validation; **YOLOv9t** on counting |
+| Lowest compute (GFLOPs) | **YOLOv12n** |
+| CPU speed | tie (≈ 21 ms per image) |
+| Training cost | tie (0.5 h each) |
 
 **Conclusion.**
-- The proposed YOLO11n stays the strongest detector. It leads on mAP@0.5 (0.608), mAP@0.5:0.95 (0.299),
-  precision and F1.
-- The newer architectures show specific strengths:
-  - YOLOv12n's attention design gives the fewest false positives and the lowest compute.
-  - YOLOv9t's GELAN design gives the smallest model and the best per-image counting error.
-- These comparison results come from half the data and about 57% of the epochs, so they are a conservative
-  estimate. A fully controlled comparison would retrain all four models on the same data, for the same
-  number of epochs, on the same machine.
+- **YOLOv12n** is the better detector. It is more precise, raises fewer false alarms, handles dense canopies
+  better and is ahead on every validation metric, with slightly less compute. Its main weakness is a
+  systematic under-count.
+- **YOLOv9t** is the smaller model, and it gave the more accurate tree counts on the test split: lower MAE
+  and a total count within 3.4% of the truth. Part of that advantage comes from its false positives
+  cancelling its misses, and the advantage does not hold on the validation split.
+- Both were trained on half the data for 17 epochs, so their absolute scores are conservative.
 
 ---
 
 ## 8. Limitations
 
-1. **Training data, epochs and hardware differ** between the reference models and the comparison models (see the caveat at the top).
-2. **The test set has been used before.** The 55-image test split had already been evaluated several times for the baselines. For the comparison models it was evaluated once, after training, and checkpoint selection used validation only.
-3. **Latency** was measured on different CPUs for the two groups of models.
-4. **Small test set.** 55 images (443 trees); per-site and per-density results rely on very few images.
-5. **The dataset is augmented.** Roboflow created 3 augmented copies of each training image. A few training images share a source name with validation or test images. These were excluded from the half subset, but the baselines' full training set includes them.
-6. **A fixed confidence of 0.25** was used for counting across all models. A per-model threshold tuned on validation could change the counting MAE.
+1. **Reduced training.** 594 of 1,191 training images and 17 epochs, imposed by a 0.5 h CPU time budget per model.
+2. **Small test set.** 55 images (443 trees); per-site and per-density results rely on very few images. The test split was evaluated once per model after training, and checkpoint selection used validation only.
+3. **The dataset is augmented.** Roboflow created 3 augmented copies of each training image. The subset keeps each image's copies together, and leaves out 10 training scenes whose names also appear in validation or test.
+4. **A fixed confidence of 0.25** was used for counting. A per-model threshold tuned on validation could change the counting MAE.
+5. **Latency is machine-specific.** It was measured on one laptop CPU (i5-12500H). Absolute milliseconds will differ on other hardware.
 
 ---
 

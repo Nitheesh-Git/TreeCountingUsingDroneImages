@@ -2,11 +2,11 @@
 
 Comparison model for the Tree Counting Using Drone Images project. The shared protocol
 is in [../README.md](../README.md). The model is trained on the **594-image half
-subset**, while the YOLOv8n and YOLO11n baselines used the full 1,191-image split.
+subset** of the 1,191-image training split, under a 0.5 h CPU time budget (17 epochs).
 
 - **Variant:** YOLOv9t (`yolov9t.pt`), COCO-pretrained, official Ultralytics asset
 - **Implementation:** `ultralytics==8.4.177` (upstream architecture: WongKinYiu/yolov9)
-- **Architecture note:** GELAN backbone (YOLOv9 family). The Ultralytics port is trained with the standard Ultralytics detection loss, not the upstream repo's dual-branch PGI training script (to be confirmed against the installed model yaml).
+- **Architecture note:** GELAN backbone (YOLOv9 family). The Ultralytics `yolov9t.yaml` is a single-branch GELAN (`RepNCSPELAN4`) network with one `Detect` head. It does not include the upstream auxiliary PGI branch (`CBLinear`/`CBFuse`), and is trained with the standard Ultralytics detection loss (verified in the installed model yaml).
 - **Settings:** `config.yaml` (416 px, 30 epochs, patience 5, batch 8, seed 0, optimizer auto)
 
 ## Commands
