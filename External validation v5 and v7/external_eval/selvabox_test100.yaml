@@ -1,0 +1,7 @@
+path: C:/Users/astle/AI1/TreeCountingUsingDroneImages/External validation v5 and v7/external_eval/selvabox_yolo
+train: images
+val: images
+test: images
+
+nc: 1
+names: ['tree-top']

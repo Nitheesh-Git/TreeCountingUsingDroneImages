@@ -1,0 +1,61 @@
+{
+  "dataset_name": "SelvaBox 100-Image Independent External Test Set (testdataset100)",
+  "source_dataset": "CanopyRS/SelvaBox",
+  "source_url": "https://huggingface.co/datasets/CanopyRS/SelvaBox",
+  "documentation_url": "https://hugobaudchon.github.io/CanopyRS/user-guide/data/",
+  "license": "CC-BY-4.0 (Creative Commons Attribution 4.0 International)",
+  "attribution": "SelvaBox: A high-resolution dataset for tropical tree crown detection (CanopyRS / ICLR). Cite Baudchon et al. / CanopyRS when publishing results.",
+  "retrieval_date": "2026-10-28T17:55:00Z",
+  "official_split_used": "test",
+  "selection_method": "Deterministic site-stratified selection (seed=42) from official held-out test split Shards 00 and 16 covering Brazil, Ecuador, and Panama with spatial separation ordering",
+  "random_seed": 42,
+  "total_test_split_metadata_inspected": 1477,
+  "total_shard_candidates_decoded": 123,
+  "total_rejected_from_decoded_shards": 23,
+  "rejection_breakdown": {
+    "not_test_split": 0,
+    "missing_or_unmatched_annotation": 0,
+    "zero_usable_tree_crowns": 0,
+    "malformed_annotation_coordinates": 0,
+    "invalid_dimensions_or_metadata": 0,
+    "exact_duplicate_tile_name": 0,
+    "spatial_overlap_or_excess_site_pool": 2,
+    "corrupt_or_unreadable_image": 0,
+    "not_suitable_aerial_imagery_nodata": 21
+  },
+  "final_selected_image_count": 100,
+  "total_annotated_tree_crowns": 8111,
+  "tree_count_statistics": {
+    "min_trees_per_image": 1,
+    "max_trees_per_image": 361,
+    "mean_trees_per_image": 81.11
+  },
+  "image_resolution": "1777x1777 pixels (4.5 cm GSD, 80x80m spatial extent)",
+  "counts_by_source_site": {
+    "brazil_zf2": 13,
+    "panama_aguasalud": 27,
+    "ecuador_tiputini": 60
+  },
+  "annotated_trees_by_source_site": {
+    "brazil_zf2": 1641,
+    "panama_aguasalud": 5375,
+    "ecuador_tiputini": 1095
+  },
+  "counts_by_source_raster": {
+    "20240130_zf2tower_m3m_rgb": 13,
+    "20231208_asforestnorthe2_m3m_rgb": 27,
+    "20230525_tbslake_m3e_rgb": 60
+  },
+  "annotation_format": {
+    "yolo_format": "Normalized YOLO format (class_id x_center y_center width height) in annotations/image_XXX.txt",
+    "class_mapping": {
+      "0": "tree-top"
+    },
+    "original_format_preserved": "COCO pixel bounding boxes [x_min, y_min, width, height] and geospatial metadata preserved in annotations/original_selvabox_annotations.json"
+  },
+  "known_limitations_and_notes": [
+    "Extracted from official held-out test shards test-00000 and test-00016 (~693 MB downloaded vs 31.3 GB full dataset) to capture all 3 geographical regions (Brazil, Ecuador, Panama).",
+    "Dense tropical forest canopies in Brazil (ZF2), Ecuador (Tiputini), and Panama (Agua Salud) exhibit significant crown overlap and multi-layered canopy structure.",
+    "Strictly reserved for out-of-domain external testing; never used for training, validation, or threshold tuning."
+  ]
+}

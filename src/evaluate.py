@@ -36,7 +36,7 @@ def main():
     
     # 3. Print the metrics cleanly
     print("\n" + "=" * 40)
-    print("🌲 TEST EVALUATION METRICS 🌲")
+    print(" TEST EVALUATION METRICS ")
     print("=" * 40)
     
     # Extract metrics from the YOLO metrics object
