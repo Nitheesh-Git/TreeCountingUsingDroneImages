@@ -1,0 +1,45 @@
+{
+  "model": "YOLOv12n",
+  "weights": "External Validation v9 and v12/yolov12/runs/yolov12n_half_subset/weights/best.pt",
+  "split": "test",
+  "detection": {
+    "precision": 0.5219,
+    "recall": 0.5421,
+    "mAP50": 0.5383,
+    "mAP50-95": 0.2596,
+    "ultralytics_speed_ms": {
+      "preprocess": 0.49,
+      "inference": 19.06,
+      "loss": 0.0,
+      "postprocess": 1.25
+    }
+  },
+  "counting": {
+    "images": 55,
+    "conf_threshold": 0.25,
+    "total_ground_truth": 443,
+    "total_predicted": 394,
+    "net_difference": -49,
+    "MAE": 3.0364,
+    "RMSE": 4.0204,
+    "mean_error_bias": -0.8909,
+    "per_image_csv": "External Validation v9 and v12/yolov12/metrics/test_counting.csv"
+  },
+  "latency": {
+    "device": "cpu",
+    "torch_threads": 8,
+    "passes": 90,
+    "inference_ms_mean": 21.19,
+    "inference_ms_std": 0.58,
+    "total_ms_mean": 21.88,
+    "total_ms_std": 0.58,
+    "hardware": "12th Gen Intel(R) Core(TM) i5-12500H"
+  },
+  "environment": {
+    "python": "3.12.13",
+    "ultralytics": "8.4.177",
+    "torch": "2.14.1+cpu",
+    "cpu": "12th Gen Intel(R) Core(TM) i5-12500H",
+    "cuda_available": false
+  }
+}

@@ -25,10 +25,10 @@ docs/external_selvabox_test100_evaluation_report.md
 External validation v5 and v7/*/*/README.md
 External validation v5 and v7/testdataset100/validation_report.txt
 
-# Comparison models: generated dataset view, pretrained weights, runs, predictions
-comparison_models/data/
-comparison_models/*/weights/
-comparison_models/*/runs/
-comparison_models/*/predictions/
-comparison_models/external_dataset/*
-!comparison_models/external_dataset/README.md
+# External Validation v9 and v12: generated dataset views, pretrained weights, runs, predictions, external data
+External Validation v9 and v12/data/
+External Validation v9 and v12/*/weights/
+External Validation v9 and v12/*/runs/
+External Validation v9 and v12/*/predictions/
+External Validation v9 and v12/external_dataset/*
+!External Validation v9 and v12/external_dataset/README.md
