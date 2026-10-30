@@ -1,0 +1,18 @@
+# YOLOv9t comparison-model configuration.
+# Training data: 594-image half subset (see common/subset_stats.md).
+# Settings are identical for YOLOv9t and YOLOv12n.
+model_name: YOLOv9t
+pretrained: yolov9t.pt            # official Ultralytics asset (COCO-pretrained), stored in weights/ (git-ignored)
+implementation: "Ultralytics port of the official YOLOv9 (WongKinYiu/yolov9), tiny variant"
+run_name: yolov9t_half_subset
+
+train:
+  imgsz: 416
+  epochs: 30
+  patience: 5
+  batch: 8
+  device: cpu               # protocol default; override with --device 0 for the GPU
+  seed: 0
+  deterministic: true
+  workers: 4
+  optimizer: auto           # Ultralytics default (resolves to AdamW lr 0.002)
