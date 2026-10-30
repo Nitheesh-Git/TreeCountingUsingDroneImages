@@ -4,3 +4,23 @@ __pycache__/
 *.pt
 *.cache
 context.md
+runs/
+outputs/
+*.npy
+*.zip
+*.log
+
+# Ignore legacy comparison_models folder (including yolov9 and yolov12)
+comparison_models/
+
+# Third-party cloned repositories & external raw dataset images inside External validation v5 and v7
+External validation v5 and v7/yolov7_tiny/yolov7_repo/
+External validation v5 and v7/testdataset100/images/
+External validation v5 and v7/testdataset100/annotations/
+External validation v5 and v7/external_eval/selvabox_yolo/
+
+# Documentation reports excluded from commit per project policy
+docs/comprehensive_model_experiment_audit.md
+docs/external_selvabox_test100_evaluation_report.md
+External validation v5 and v7/*/*/README.md
+External validation v5 and v7/testdataset100/validation_report.txt

@@ -36,7 +36,7 @@ def main():
     
     # 7. Print the total count in the terminal
     print("-" * 40)
-    print(f"🌲 Total trees detected: {tree_count}")
+    print(f" Total trees detected: {tree_count}")
     print("-" * 40)
 
     # 4, 5 & 8. Draw bounding boxes, confidences, and save the annotated image

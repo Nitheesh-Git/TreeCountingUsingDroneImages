@@ -1,0 +1,23 @@
+{
+  "seed": 42,
+  "subset_count": 595,
+  "full_train_count": 1191,
+  "full_stats": {
+    "image_count": 1191,
+    "total_instances": 10002,
+    "background_images": 39,
+    "avg_instances_per_image": 8.397984886649875,
+    "avg_box_width": 0.14286049040191962,
+    "avg_box_height": 0.14015165716856628,
+    "avg_box_area": 0.024671798316464665
+  },
+  "subset_stats": {
+    "image_count": 595,
+    "total_instances": 4939,
+    "background_images": 19,
+    "avg_instances_per_image": 8.300840336134454,
+    "avg_box_width": 0.14293929205538336,
+    "avg_box_height": 0.1403212947965175,
+    "avg_box_area": 0.024690655136994557
+  }
+}

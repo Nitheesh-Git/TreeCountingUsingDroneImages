@@ -1,0 +1,5 @@
+train: C:/Users/astle/AI1/TreeCountingUsingDroneImages/datasets/Tree-Top-View/train_subset_595.txt
+val: C:/Users/astle/AI1/TreeCountingUsingDroneImages/datasets/Tree-Top-View/valid/images
+test: C:/Users/astle/AI1/TreeCountingUsingDroneImages/datasets/Tree-Top-View/test/images
+nc: 1
+names: ['tree-top']

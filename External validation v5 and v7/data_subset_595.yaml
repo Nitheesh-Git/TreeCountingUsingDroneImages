@@ -1,0 +1,12 @@
+path: C:/Users/astle/AI1/TreeCountingUsingDroneImages/datasets/Tree-Top-View
+train: train_subset_595.txt
+val: valid/images
+test: test/images
+nc: 1
+names:
+- tree-top
+metadata:
+  subset_name: train_subset_595
+  seed: 42
+  fraction: 0.4996
+  description: Reproducible 595-image subset for comparison models

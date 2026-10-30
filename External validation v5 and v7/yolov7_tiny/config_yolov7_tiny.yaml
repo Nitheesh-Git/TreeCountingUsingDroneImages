@@ -1,0 +1,39 @@
+# YOLOv7-tiny Comparison Experiment Configuration
+model:
+  architecture: "YOLOv7-tiny (WongKinYiu E-ELAN Tiny variant)"
+  pretrained_weights: "External validation v5 and v7/yolov7_tiny/yolov7-tiny.pt"
+  cfg: "External validation v5 and v7/yolov7_tiny/yolov7_repo/cfg/training/yolov7-tiny.yaml"
+  num_classes: 1
+  class_names: ["tree-top"]
+  parameters_count: ~6.0M
+
+dataset:
+  config_path: "External validation v5 and v7/data_subset_595.yaml"
+  yolov7_config_path: "External validation v5 and v7/yolov7_tiny/data_subset_595_yolov7.yaml"
+  subset_size: 595
+  subset_seed: 42
+  subset_fraction: 0.4996
+  original_full_train_size: 1191
+  validation_size: 116
+  test_size: 55
+
+training_hyperparameters:
+  epochs: 30
+  batch_size: 8
+  imgsz: 416
+  patience: 5
+  seed: 42
+  device: "cpu"
+  workers: 0
+  hyp: "External validation v5 and v7/yolov7_tiny/yolov7_repo/data/hyp.scratch.tiny.yaml"
+
+outputs:
+  project: "External validation v5 and v7/yolov7_tiny/runs"
+  run_name: "yolov7_tiny_subset"
+  evaluation_project: "External validation v5 and v7/yolov7_tiny/runs/evaluation"
+  predictions_dir: "External validation v5 and v7/yolov7_tiny/runs/predictions"
+
+comparison_notes:
+  - "YOLOv8n baseline and YOLO11n Phase 2 were trained on the full 1,191-image set."
+  - "YOLOv7-tiny is trained on the identical reproducible 595-image subset (seed 42) used for YOLOv5n."
+  - "Evaluations on validation (116) and test (55) splits are identical across all models."

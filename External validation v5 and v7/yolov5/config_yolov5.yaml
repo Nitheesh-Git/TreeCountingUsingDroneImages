@@ -1,0 +1,36 @@
+# YOLOv5n Comparison Experiment Configuration
+model:
+  architecture: "YOLOv5n (Ultralytics YOLOv5nu variant)"
+  pretrained_weights: "yolov5nu.pt"
+  num_classes: 1
+  class_names: ["tree-top"]
+  parameters_count: ~2.6M
+
+dataset:
+  config_path: "External validation v5 and v7/data_subset_595.yaml"
+  subset_size: 595
+  subset_seed: 42
+  subset_fraction: 0.4996
+  original_full_train_size: 1191
+  validation_size: 116
+  test_size: 55
+
+training_hyperparameters:
+  epochs: 30
+  batch_size: 8
+  imgsz: 416
+  patience: 5
+  seed: 42
+  device: "cpu"
+  workers: 4
+  optimizer: "auto (SGD/AdamW default in Ultralytics)"
+
+outputs:
+  project: "External validation v5 and v7/yolov5/runs"
+  run_name: "yolov5n_subset"
+  evaluation_project: "External validation v5 and v7/yolov5/runs/evaluation"
+
+comparison_notes:
+  - "YOLOv8n baseline and YOLO11n Phase 2 were trained on the full 1,191-image set."
+  - "YOLOv5n is trained on the reproducible 595-image subset (seed 42) to minimize CPU runtime."
+  - "Evaluations on validation (116) and test (55) splits are identical across all models."
